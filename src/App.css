@@ -17,9 +17,6 @@ body {
 
 .table-container {
   width: fit-content;
-  max-width: 90%;
-  min-width: 0;
-  overflow-x: hidden;
 }
 
 .table-cell--center {
@@ -28,8 +25,10 @@ body {
   align-items: center;
 }
 
-.create-modal__content {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+.link-modal__content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+  margin-bottom: 16px;
 }

@@ -15,16 +15,28 @@
   },
   "dependencies": {
     "@mondaycom/apps-sdk": "3.0.2",
+    "@tanstack/react-form": "0.16.0",
+    "@tanstack/react-query": "5.28.4",
+    "@tanstack/zod-form-adapter": "0.16.0",
     "monday-sdk-js": "0.5.5",
     "monday-ui-react-core": "2.96.0",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "zod": "3.22.4"
   },
   "devDependencies": {
     "@mondaycom/apps-cli": "2.3.3",
-    "concurrently": "^5.2.0",
-    "cross-port-killer": "^1.2.1",
-    "eslint-config-react-app": "^7.0.1",
+    "@tanstack/eslint-plugin-query": "5.27.7",
+    "concurrently": "5.2.0",
+    "cross-port-killer": "1.2.1",
+    "eslint": "8.56.0",
+    "eslint-config-react-app": "7.0.1",
+    "eslint-import-resolver-alias": "1.1.2",
+    "eslint-import-resolver-typescript": "3.6.1",
+    "eslint-plugin-eslint-comments": "3.2.0",
+    "eslint-plugin-import": "2.29.1",
+    "eslint-plugin-prettier": "4.2.1",
+    "eslint-plugin-react": "7.34.1",
     "react-scripts": "^5.0.1",
     "sass": "^1.54.8"
   },
