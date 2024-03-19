@@ -20,6 +20,8 @@ import { BASE_URL } from '../utils/constants';
 import { formatDate } from '../utils/dates';
 import NewLinkModal from './new-link-modal';
 import EditLinkModal from './edit-link-modal';
+import DeleteLinkModal from './delete-link-modal';
+import CopyToClipboard from './copy-to-clipboard';
 
 const TableEmptyState = () => <h1 style={{ textAlign: 'center' }}>Empty State</h1>;
 const TableErrorState = () => <h1 style={{ textAlign: 'center' }}>Error State</h1>;
@@ -88,9 +90,9 @@ export default function LinksList() {
                 <TableCell className="table-cell--center">{link.expiresAt ? formatDate(link.expiresAt) : '-'}</TableCell>
                 <TableCell className="table-cell--center">
                   <Flex gap="12">
-                    <IconButton icon={Attach} size={Button.sizes.XS} kind={Button.kinds.SECONDARY}/>
+                    <CopyToClipboard link={link} />
                     <EditLinkModal link={link}/>
-                    <IconButton icon={Delete} size={Button.sizes.XS} kind={Button.kinds.SECONDARY}/>
+                    <DeleteLinkModal link={link}/>
                   </Flex>
                 </TableCell>
               </TableRow>

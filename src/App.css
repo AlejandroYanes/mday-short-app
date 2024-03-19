@@ -5,7 +5,7 @@ body {
 
 .app {
   height: 100vh;
-  width: 100vw;
+  width: 100%;
   display: flex;
   flex-direction: column;
   padding: 16px;
@@ -32,3 +32,43 @@ body {
   margin-top: 16px;
   margin-bottom: 16px;
 }
+
+.monday-storybook-toast {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  left: unset;
+  width: 380px;
+  /*transform: translateX(-50%);*/
+  z-index: 1000;
+}
+
+.monday-storybook-toast:first-of-type {
+  margin-top: 0;
+}
+
+/*.monday-storybook-toast {*/
+/*  position: static;*/
+/*  transform: translate(0, 0);*/
+/*  margin-right: auto !important;*/
+/*  margin-left: auto !important;*/
+/*}*/
+
+/*.monday-storybook-toast_negative_rule {*/
+/*  margin-bottom: 0;*/
+/*  margin-top: 0;*/
+/*}*/
+
+/*.monday-storybook-toast_toast-line-wrapper {*/
+/*  position: static;*/
+/*  left: 0;*/
+/*  right: 0;*/
+/*  margin: 0;*/
+/*  transform: translate(0, 0);*/
+/*}*/
+
+/*.monday-storybook-toast_box {*/
+/*  width: 390px;*/
+/*  margin-right: auto !important;*/
+/*  margin-left: auto !important;*/
+/*}*/
