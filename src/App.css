@@ -6,6 +6,7 @@ body {
 .app {
   height: 100vh;
   width: 100%;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   padding: 16px;
@@ -17,12 +18,18 @@ body {
 
 .table-container {
   width: fit-content;
+  max-width: 100%
 }
 
 .table-cell--center {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.link-cell__label {
+  font-size: 14px;
+  line-height: 18px;
 }
 
 .link-modal__content {
@@ -39,36 +46,9 @@ body {
   right: 16px;
   left: unset;
   width: 380px;
-  /*transform: translateX(-50%);*/
   z-index: 1000;
 }
 
 .monday-storybook-toast:first-of-type {
   margin-top: 0;
 }
-
-/*.monday-storybook-toast {*/
-/*  position: static;*/
-/*  transform: translate(0, 0);*/
-/*  margin-right: auto !important;*/
-/*  margin-left: auto !important;*/
-/*}*/
-
-/*.monday-storybook-toast_negative_rule {*/
-/*  margin-bottom: 0;*/
-/*  margin-top: 0;*/
-/*}*/
-
-/*.monday-storybook-toast_toast-line-wrapper {*/
-/*  position: static;*/
-/*  left: 0;*/
-/*  right: 0;*/
-/*  margin: 0;*/
-/*  transform: translate(0, 0);*/
-/*}*/
-
-/*.monday-storybook-toast_box {*/
-/*  width: 390px;*/
-/*  margin-right: auto !important;*/
-/*  margin-left: auto !important;*/
-/*}*/

@@ -15,6 +15,7 @@ import { useForm } from '@tanstack/react-form'
 
 import { linksAPI } from '../api/links';
 import { queryClient } from '../utils/query';
+import { stripTimezone } from '../utils/dates';
 
 export default function EditLinkModal(props) {
   const { link } = props;
@@ -26,7 +27,7 @@ export default function EditLinkModal(props) {
       url: link.url,
       slug: link.slug,
       password: link.password || '',
-      expiresAt: link.expiresAt || '',
+      expiresAt: link.expiresAt ? stripTimezone(link.expiresAt) : '',
     },
     onSubmit: async ({ value }) => {
       await linksAPI.update({

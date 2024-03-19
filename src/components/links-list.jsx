@@ -1,18 +1,4 @@
-import {
-  Button,
-  Flex,
-  IconButton,
-  Link,
-  Table,
-  TableBody,
-  TableCell,
-  TableHeader,
-  TableHeaderCell,
-  TableRow,
-  Tooltip,
-} from 'monday-ui-react-core';
-// eslint-disable-next-line import/no-unresolved
-import { Attach, Delete } from 'monday-ui-react-core/icons';
+import { Flex, Link, Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow, } from 'monday-ui-react-core';
 import { useQuery } from '@tanstack/react-query';
 
 import { linksAPI } from '../api/links';
@@ -31,22 +17,22 @@ const columns = [
     id: 'baseLink',
     loadingStateType: 'medium-text',
     title: 'Board Link',
-    width: 380,
+    width: 440,
   },
   {
     id: 'slug',
     loadingStateType: 'medium-text',
     title: 'Short name',
-    width: 150,
+    width: 280,
   },
   {
-    id: 'visitors',
+    id: 'password',
     loadingStateType: 'medium-text',
     title: 'Visitors',
-    width: 150,
+    width: 200,
   },
   {
-    id: 'views',
+    id: 'expiresAt',
     loadingStateType: 'medium-text',
     title: 'Views',
     width: 150,
@@ -72,22 +58,24 @@ export default function LinksList() {
         <Table columns={columns} emptyState={<TableEmptyState/>} errorState={<TableErrorState/>}>
           <TableHeader>
             <TableHeaderCell title="Board Url"/>
-            <TableHeaderCell title="Short name" className="table-cell--center"/>
-            <TableHeaderCell title="Password" className="table-cell--center"/>
-            <TableHeaderCell title="Expires On" className="table-cell--center"/>
+            <TableHeaderCell title="Short name"/>
+            <TableHeaderCell title="Password"/>
+            <TableHeaderCell title="Expires On"/>
             <TableHeaderCell title="" className="table-cell--center"/>
           </TableHeader>
           <TableBody>
             {results.map((link) => (
               <TableRow key={link.id}>
                 <TableCell>
-                  {link.url}
+                  <span className="link-cell__label">
+                    {link.url}
+                  </span>
                 </TableCell>
-                <TableCell className="table-cell--center">
+                <TableCell>
                   <Link href={`${BASE_URL}/visit/${link.slug}`} text={link.slug} />
                 </TableCell>
-                <TableCell className="table-cell--center">{link.password || '-'}</TableCell>
-                <TableCell className="table-cell--center">{link.expiresAt ? formatDate(link.expiresAt) : '-'}</TableCell>
+                <TableCell>{link.password || '-'}</TableCell>
+                <TableCell>{link.expiresAt ? formatDate(link.expiresAt) : '-'}</TableCell>
                 <TableCell className="table-cell--center">
                   <Flex gap="12">
                     <CopyToClipboard link={link} />
