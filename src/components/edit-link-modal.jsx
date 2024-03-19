@@ -11,11 +11,20 @@ import {
 } from 'monday-ui-react-core';
 // eslint-disable-next-line import/no-unresolved
 import { Edit } from 'monday-ui-react-core/icons';
-import { useForm } from '@tanstack/react-form'
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
 import { linksAPI } from '../api/links';
 import { queryClient } from '../utils/query';
 import { stripTimezone } from '../utils/dates';
+
+const schema = z.object({
+  url: z.string().url(),
+  slug: z.string().min(4),
+  password: z.string().optional(),
+  expiresAt: z.string().optional(),
+});
 
 export default function EditLinkModal(props) {
   const { link } = props;
@@ -29,20 +38,22 @@ export default function EditLinkModal(props) {
       password: link.password || '',
       expiresAt: link.expiresAt ? stripTimezone(link.expiresAt) : '',
     },
-    onSubmit: async ({ value }) => {
-      await linksAPI.update({
-        ...value,
-        password: value.password || null,
-        expiresAt: value.expiresAt || null,
-        id: link.id,
-      });
-      await queryClient.invalidateQueries({ queryKey: ['links'] });
-      setShow(false);
-      form.reset();
-    }
+    resolver: zodResolver(schema),
   });
 
   const handleClose = () => {
+    setShow(false);
+    form.reset();
+  }
+
+  const handleSubmit = async ({ value }) => {
+    await linksAPI.update({
+      ...value,
+      password: value.password || null,
+      expiresAt: value.expiresAt || null,
+      id: link.id,
+    });
+    await queryClient.invalidateQueries({ queryKey: ['links'] });
     setShow(false);
     form.reset();
   }
@@ -66,61 +77,33 @@ export default function EditLinkModal(props) {
         <ModalContent>
           <form>
             <div className="link-modal__content">
-              <form.Field
+              <TextField
+                required
+                requiredAsterisk
                 name="url"
-                children={(field) => (
-                  <TextField
-                    required
-                    requiredAsterisk
-                    name={field.name}
-                    title="URL"
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    placeholder="https://example.com"
-                    onChange={(value) => field.handleChange(value)}
-                  />
-                )}
+                title="URL"
+                placeholder="https://example.com"
+                {...form.register('url', { required: 'The URL is required' })}
               />
-              <form.Field
+              <TextField
+                required
+                requiredAsterisk
                 name="slug"
-                children={(field) => (
-                  <TextField
-                    required
-                    requiredAsterisk
-                    name={field.name}
-                    title="Short name"
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    placeholder="nice-short-name"
-                    onChange={(value) => field.handleChange(value)}
-                  />
-                )}
+                title="Short name"
+                placeholder="nice-short-name"
+                {...form.register('slug', { required: 'The short name is required' })}
               />
-              <form.Field
+              <TextField
                 name="password"
-                children={(field) => (
-                  <TextField
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    title="Password"
-                    placeholder="a memorable password"
-                    onChange={(value) => field.handleChange(value)}
-                  />
-                )}
+                title="Password"
+                placeholder="a memorable password"
+                {...form.register('password')}
               />
-              <form.Field
+              <TextField
                 name="expiresAt"
-                children={(field) => (
-                  <TextField
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    title="Expires On"
-                    type={TextField.types.DATE}
-                    onChange={(value) => field.handleChange(value)}
-                  />
-                )}
+                title="Expires On"
+                type={TextField.types.DATE}
+                {...form.register('expiresAt')}
               />
             </div>
           </form>
@@ -128,7 +111,7 @@ export default function EditLinkModal(props) {
         <ModalFooterButtons
           primaryButtonText="Confirm"
           secondaryButtonText="Cancel"
-          onPrimaryButtonClick={form.handleSubmit}
+          onPrimaryButtonClick={form.handleSubmit(handleSubmit)}
           onSecondaryButtonClick={handleClose}
         />
       </Modal>

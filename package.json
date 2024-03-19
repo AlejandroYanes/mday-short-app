@@ -14,14 +14,14 @@
     "deploy": "mapps code:push -i 10212118"
   },
   "dependencies": {
+    "@hookform/resolvers": "3.3.4",
     "@mondaycom/apps-sdk": "3.0.2",
-    "@tanstack/react-form": "0.16.0",
     "@tanstack/react-query": "5.28.4",
-    "@tanstack/zod-form-adapter": "0.16.0",
     "monday-sdk-js": "0.5.5",
     "monday-ui-react-core": "2.96.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hook-form": "7.51.1",
     "zod": "3.22.4"
   },
   "devDependencies": {

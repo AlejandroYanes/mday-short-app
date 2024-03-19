@@ -45,7 +45,7 @@ export default function DeleteLinkModal(props) {
         onClose={handleClose}
         closeButtonAriaLabel={'close'}
       >
-        <ModalHeader title="Please confirm"/>
+        <ModalHeader title="Are you absolutely sure?"/>
         <ModalContent className="link-modal__content">
           Are you sure you want to delete the link? This action cannot be undone.
         </ModalContent>
