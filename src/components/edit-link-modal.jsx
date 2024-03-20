@@ -11,7 +11,7 @@ import {
 } from 'monday-ui-react-core';
 // eslint-disable-next-line import/no-unresolved
 import { Edit } from 'monday-ui-react-core/icons';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
@@ -28,11 +28,12 @@ const schema = z.object({
 
 export default function EditLinkModal(props) {
   const { link } = props;
-  const [show, setShow] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
   const openModalButtonRef = useRef(null);
 
   const form = useForm({
-    defaultValues: {
+    values: {
       url: link.url,
       slug: link.slug,
       password: link.password || '',
@@ -41,22 +42,46 @@ export default function EditLinkModal(props) {
     resolver: zodResolver(schema),
   });
 
+  const showError = (message) => {
+    setErrorMessage(message);
+    setTimeout(() => setErrorMessage(false), 5000);
+  }
+
   const handleClose = () => {
-    setShow(false);
+    setShowModal(false);
     form.reset();
   }
 
-  const handleSubmit = async ({ value }) => {
-    await linksAPI.update({
-      ...value,
-      password: value.password || null,
-      expiresAt: value.expiresAt || null,
-      id: link.id,
-    });
-    await queryClient.invalidateQueries({ queryKey: ['links'] });
-    setShow(false);
-    form.reset();
+  const handleSubmit = async () => {
+    const value = form.getValues();
+    try {
+      const response = await linksAPI.update({
+        ...value,
+        password: value.password || null,
+        expiresAt: value.expiresAt || null,
+        id: link.id,
+      });
+
+      if (response.ok) {
+        await queryClient.invalidateQueries({ queryKey: ['links'] });
+        setShowModal(false);
+        form.reset();
+      } else {
+        if (response.field === 'slug') {
+          form.setError('slug', { type: 'manual', message: response.error });
+        } if (response.field === 'not-found') {
+          showError(response.error);
+        } else {
+          showError();
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      showError();
+    }
   }
+
+  console.log(form.formState.errors);
 
   return (
     <>
@@ -65,48 +90,78 @@ export default function EditLinkModal(props) {
         size={Button.sizes.XS}
         kind={Button.kinds.SECONDARY}
         ref={openModalButtonRef}
-        onClick={() => setShow(true)}
+        onClick={() => setShowModal(true)}
       />
       <Modal
         triggerElement={openModalButtonRef.current}
-        show={show}
+        show={showModal}
         onClose={handleClose}
-        closeButtonAriaLabel={'close'}
+        closeButtonAriaLabel="close"
       >
         <ModalHeader title="Update link" />
         <ModalContent>
           <form>
             <div className="link-modal__content">
-              <TextField
-                required
-                requiredAsterisk
+              <Controller
                 name="url"
-                title="URL"
-                placeholder="https://example.com"
-                {...form.register('url', { required: 'The URL is required' })}
+                control={form.control}
+                render={({field}) => (
+                  <TextField
+                    required
+                    requiredAsterisk
+                    title="URL"
+                    placeholder="https://example.com"
+                    type={TextField.types.URL}
+                    {...field}
+                  />
+                )}
               />
-              <TextField
-                required
-                requiredAsterisk
+              <Controller
                 name="slug"
-                title="Short name"
-                placeholder="nice-short-name"
-                {...form.register('slug', { required: 'The short name is required' })}
+                control={form.control}
+                render={({field}) => (
+                  <TextField
+                    required
+                    requiredAsterisk
+                    title="Short name"
+                    placeholder="nice-short-name"
+                    validation={{
+                      status: form.formState.errors.slug ? 'error' : undefined,
+                      text: form.formState.errors.slug?.message,
+                    }}
+                    {...field}
+                  />
+                )}
               />
-              <TextField
+              <Controller
                 name="password"
-                title="Password"
-                placeholder="a memorable password"
-                {...form.register('password')}
+                control={form.control}
+                render={({field}) => (
+                  <TextField
+                    title="Password"
+                    placeholder="a memorable password"
+                    {...field}
+                  />
+                )}
               />
-              <TextField
+              <Controller
                 name="expiresAt"
-                title="Expires On"
-                type={TextField.types.DATE}
-                {...form.register('expiresAt')}
+                control={form.control}
+                render={({field}) => (
+                  <TextField
+                    title="Expires On"
+                    type={TextField.types.DATE}
+                    {...field}
+                  />
+                )}
               />
             </div>
           </form>
+          {errorMessage ? (
+            <span style={{color: 'var(--color-error)'}}>
+              Something went wrong. Please try again. If the issue persists, contact support.
+            </span>
+          ) : null}
         </ModalContent>
         <ModalFooterButtons
           primaryButtonText="Confirm"

@@ -17,12 +17,32 @@ import { queryClient } from '../utils/query';
 export default function DeleteLinkModal(props) {
   const { link } = props;
   const [show, setShow] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
   const openModalButtonRef = useRef(null);
 
+  const showError = (message) => {
+    setErrorMessage(message);
+    setTimeout(() => setErrorMessage(false), 5000);
+  }
+
   const deleteLink = async () => {
-    await linksAPI.delete(link.id);
-    await queryClient.invalidateQueries({ queryKey: ['links'] });
-    setShow(false);
+    try {
+      const response = await linksAPI.delete(link.id);
+
+      if (response.ok) {
+        await queryClient.invalidateQueries({ queryKey: ['links'] });
+        setShow(false);
+      } else {
+        if (response.field === 'not-found') {
+          showError(response.error);
+        } else {
+          showError('Something went wrong. Please try again. If the issue persists, contact support.');
+        }
+      }
+    } catch (e) {
+      console.error(e);
+      showError('Something went wrong. Please try again. If the issue persists, contact support.');
+    }
   };
 
   const handleClose = () => {
@@ -48,6 +68,11 @@ export default function DeleteLinkModal(props) {
         <ModalHeader title="Are you absolutely sure?"/>
         <ModalContent className="link-modal__content">
           Are you sure you want to delete the link? This action cannot be undone.
+          {errorMessage ? (
+            <span style={{color: 'var(--color-error)'}}>
+              {errorMessage}
+            </span>
+          ) : null}
         </ModalContent>
         <ModalFooterButtons
           primaryButtonText="Delete"

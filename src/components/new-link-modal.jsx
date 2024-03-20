@@ -1,7 +1,7 @@
 /* eslint-disable react/no-children-prop,max-len */
 import { useRef, useState } from 'react';
 import { Button, Modal, ModalContent, ModalFooterButtons, ModalHeader, TextField } from 'monday-ui-react-core';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
@@ -16,7 +16,8 @@ const schema = z.object({
 });
 
 export default function NewLinkModal() {
-  const [show, setShow] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
   const openModalButtonRef = useRef(null);
 
   const form = useForm({
@@ -29,8 +30,13 @@ export default function NewLinkModal() {
     resolver: zodResolver(schema),
   });
 
+  const showError = () => {
+    setShowErrorMessage(true);
+    setTimeout(() => setShowErrorMessage(false), 5000);
+  }
+
   const handleClose = () => {
-    setShow(false);
+    setShowModal(false);
     form.reset();
   }
 
@@ -45,68 +51,96 @@ export default function NewLinkModal() {
 
       if (response.ok) {
         await queryClient.invalidateQueries({ queryKey: ['links'] });
-        setShow(false);
+        setShowModal(false);
         form.reset();
       } else {
-        form.setError('slug', { type: 'manual', message: response.error });
+        if (response.field === 'slug') {
+          form.setError('slug', { type: 'manual', message: response.error });
+        } else {
+          showError();
+        }
       }
     } catch (error) {
       console.error(error);
+      showError();
     }
   }
 
   return (
     <>
-      <Button ref={openModalButtonRef} onClick={() => setShow(true)}>
+      <Button ref={openModalButtonRef} onClick={() => setShowModal(true)}>
         Add new link
       </Button>
       <Modal
         triggerElement={openModalButtonRef.current}
-        show={show}
+        show={showModal}
         onClose={handleClose}
-        closeButtonAriaLabel={'close'}
+        closeButtonAriaLabel="close"
       >
         <ModalHeader title="Add a new link"/>
         <ModalContent>
-          <div className="link-modal__content">
-            <form>
-              <div className="link-modal__content">
-                <TextField
-                  required
-                  requiredAsterisk
-                  name="url"
-                  title="URL"
-                  type={TextField.types.URL}
-                  placeholder="https://example.com"
-                  {...form.register('url', { required: 'The URL is required' })}
-                />
-                <TextField
-                  required
-                  requiredAsterisk
-                  name="slug"
-                  title="Short name"
-                  placeholder="nice-short-name"
-                  validation={{
-                    status: form.formState.errors.slug ? 'error' : undefined,
-                    text: form.formState.errors.slug?.message,
-                  }}
-                  {...form.register('slug', { required: 'The short name is required' })}
-                />
-                <TextField
-                  name="password"
-                  title="Password"
-                  placeholder="a memorable password"
-                  {...form.register('password')}
-                />
-                <TextField
-                  name="expiresAt"
-                  title="Expires On"
-                  type={TextField.types.DATE}
-                  {...form.register('expiresAt')}
-                />
-              </div>
-            </form>
-          </div>
+          <form>
+            <div className="link-modal__content">
+              <Controller
+                name="url"
+                control={form.control}
+                render={({field}) => (
+                  <TextField
+                    required
+                    requiredAsterisk
+                    title="URL"
+                    placeholder="https://example.com"
+                    type={TextField.types.URL}
+                    {...field}
+                  />
+                )}
+              />
+              <Controller
+                name="slug"
+                control={form.control}
+                render={({field}) => (
+                  <TextField
+                    required
+                    requiredAsterisk
+                    title="Short name"
+                    placeholder="nice-short-name"
+                    validation={{
+                      status: form.formState.errors.slug ? 'error' : undefined,
+                      text: form.formState.errors.slug?.message,
+                    }}
+                    {...field}
+                  />
+                )}
+              />
+              <Controller
+                name="password"
+                control={form.control}
+                render={({field}) => (
+                  <TextField
+                    title="Password"
+                    placeholder="a memorable password"
+                    {...field}
+                  />
+                )}
+              />
+              <Controller
+                name="expiresAt"
+                control={form.control}
+                render={({field}) => (
+                  <TextField
+                    title="Expires On"
+                    type={TextField.types.DATE}
+                    {...field}
+                  />
+                )}
+              />
+            </div>
+          </form>
+          {showErrorMessage ? (
+            <span style={{color: 'var(--color-error)'}}>
+              Something went wrong. Please try again. If the issue persists, contact support.
+            </span>
+          ) : null}
         </ModalContent>
         <ModalFooterButtons
           primaryButtonText="Confirm"
