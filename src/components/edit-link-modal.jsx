@@ -81,8 +81,6 @@ export default function EditLinkModal(props) {
     }
   }
 
-  console.log(form.formState.errors);
-
   return (
     <>
       <IconButton
