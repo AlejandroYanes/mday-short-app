@@ -1,4 +1,6 @@
-import { Flex, Link, Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow, } from 'monday-ui-react-core';
+import { Flex, Link, Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow } from 'monday-ui-react-core';
+// eslint-disable-next-line import/no-unresolved
+import { Heading } from 'monday-ui-react-core/next';
 import { useQuery } from '@tanstack/react-query';
 
 import { linksAPI } from '../api/links';
@@ -9,8 +11,8 @@ import EditLinkModal from './edit-link-modal';
 import DeleteLinkModal from './delete-link-modal';
 import CopyToClipboard from './copy-to-clipboard';
 
-const TableEmptyState = () => <h1 style={{ textAlign: 'center' }}>Empty State</h1>;
-const TableErrorState = () => <h1 style={{ textAlign: 'center' }}>Error State</h1>;
+const TableEmptyState = () => <Heading style={{ textAlign: 'center', margin: '24px 0' }}>Empty State</Heading>;
+const TableErrorState = () => <Heading style={{ textAlign: 'center', margin: '24px 0' }}>Error State</Heading>;
 
 const columns = [
   {

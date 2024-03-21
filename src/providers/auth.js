@@ -19,10 +19,10 @@ const AuthProvider = ({ children }) => {
       const response = await authAPI.check({ workspace: workspaceId, user: user.id });
 
       if (response.ok) {
-        const { status } = response;
+        const { status } = await response.json();
 
         if (status === 'found') {
-          setAuthContext({ status: AUTH_CHECK_STATUS.AUTHENTICATED, user, workspaceId });
+          setAuthContext({ status: AUTH_CHECK_STATUS.AUTHENTICATED, user, workspace: workspaceId });
         } else {
           setAuthContext({ status: AUTH_CHECK_STATUS.NEEDS_SETUP });
         }
@@ -39,16 +39,6 @@ const AuthProvider = ({ children }) => {
     // Notice this method notifies the monday platform that user gains a first value in an app.
     // Read more about it here: https://developer.monday.com/apps/docs/mondayexecute#value-created-for-user/
     // monday.execute("valueCreatedForUser");
-
-    // TODO: set up event listeners, Here`s an example, read more here: https://developer.monday.com/apps/docs/mondaylisten/
-    // monday.listen('context', (res) => {
-    //   // setContext(res.data);
-    //   console.log(res);
-    // });
-    // monday.get('context').then((res) => {
-    //   // setContext(res.data);
-    //   console.log(res);
-    // });
     handleInitialisation();
   }, []);
 

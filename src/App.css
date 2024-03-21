@@ -1,6 +1,27 @@
+:root {
+  --font-family: Figtree, Roboto, Noto Sans Hebrew, Noto Kufi Arabic, Noto Sans JP, sans-serif;
+  --title-font-family: Poppins, Roboto, Noto Sans Hebrew, Noto Kufi Arabic, Noto Sans JP, sans-serif;
+}
+
 body {
   margin: 0;
-  font-family: "Roboto", sans-serif;
+  font-family: var(--font-family);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--title-font-family);
+}
+
+a, p, span {
+  font-family: var(--font-family);
+  font-size: 16px;
+}
+
+code {
+  background-color: var(--grey-background-color);
+  font-size: 16px;
+  padding: 1px;
+  line-height: 24px;
 }
 
 .app {
@@ -10,6 +31,17 @@ body {
   display: flex;
   flex-direction: column;
   padding: 16px;
+}
+
+.banner {
+  display: flex;
+  align-items: center;
+}
+
+.banner__letters {
+  font-family: var(--title-font-family);
+  font-size: 32px;
+  font-weight: bold;
 }
 
 .tool-bar {
@@ -51,4 +83,31 @@ body {
 
 .monday-storybook-toast:first-of-type {
   margin-top: 0;
+}
+
+.fail-screen {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.setup-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.setup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 280px;
+  margin-top: 12px;
 }
