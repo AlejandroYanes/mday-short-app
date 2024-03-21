@@ -3,6 +3,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet';
 
 import { AuthProvider } from './providers/auth';
+import ThemeProvider from './providers/theme-provider';
 import EntryPoint from './components/entry-point';
 import { queryClient } from './utils/query';
 import 'monday-ui-react-core/dist/main.css';
@@ -18,9 +19,11 @@ const App = () => {
         />
       </Helmet>
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <EntryPoint />
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <EntryPoint />
+          </AuthProvider>
+        </ThemeProvider>
       </QueryClientProvider>
     </>
   );

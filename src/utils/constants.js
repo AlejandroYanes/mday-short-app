@@ -6,3 +6,5 @@ export const AUTH_CHECK_STATUS = {
   UNKNOWN: 'UNKNOWN',
   FAILED: 'FAILED',
 }
+
+export const KEBAB_CASE_REGEX = /^[a-z]+(-[a-z]+)*$/;

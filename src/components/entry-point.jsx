@@ -13,7 +13,9 @@ export default function EntryPoint() {
   if (status === AUTH_CHECK_STATUS.UNKNOWN) {
     return (
       <div className="app">
-        <Heading>Loading...</Heading>
+        <div className="loading-screen">
+          <Heading align={Heading.align.CENTER}>Loading...</Heading>
+        </div>
       </div>
     );
   }
@@ -22,8 +24,8 @@ export default function EntryPoint() {
     return (
       <div className="app">
         <div className="fail-screen">
-          <Heading>Error</Heading>
-          <Text type={Text.types.TEXT1}>
+          <Heading align={Heading.align.CENTER}>Error</Heading>
+          <Text type={Text.types.TEXT1} align={Text.align.CENTER}>
             An error occurred while trying to authenticate you.
             Please try again later.
           </Text>

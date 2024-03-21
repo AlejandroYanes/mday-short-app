@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import mondaySdk from 'monday-sdk-js';
 
 import { authAPI } from '../api/auth';
@@ -11,12 +11,17 @@ const AuthContext = createContext({ status: AUTH_CHECK_STATUS.UNKNOWN });
 const AuthProvider = ({ children }) => {
   const [authContext, setAuthContext] = useState({ status: AUTH_CHECK_STATUS.UNKNOWN });
 
+  const contextValue = useMemo(() => ({
+    ...authContext,
+    updateStatus: (status) => setAuthContext((prev) => ({ ...prev, status })),
+  }), [authContext]);
+
   const handleInitialisation = async () => {
     try {
       const mondayContext = await monday.get('context');
       const { workspaceId, user } = mondayContext.data;
 
-      const response = await authAPI.check({ workspace: workspaceId, user: user.id });
+      const response = await authAPI.check({ workspace: Number(workspaceId), user: Number(user.id) });
 
       if (response.ok) {
         const { status } = await response.json();
@@ -24,7 +29,7 @@ const AuthProvider = ({ children }) => {
         if (status === 'found') {
           setAuthContext({ status: AUTH_CHECK_STATUS.AUTHENTICATED, user, workspace: workspaceId });
         } else {
-          setAuthContext({ status: AUTH_CHECK_STATUS.NEEDS_SETUP });
+          setAuthContext({ status: AUTH_CHECK_STATUS.NEEDS_SETUP, user, workspace: workspaceId });
         }
       } else {
         setAuthContext({ status: AUTH_CHECK_STATUS.FAILED });
@@ -42,7 +47,7 @@ const AuthProvider = ({ children }) => {
     handleInitialisation();
   }, []);
 
-  return <AuthContext.Provider value={authContext}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 }
 
 const useAuth = () => {
