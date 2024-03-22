@@ -1,11 +1,17 @@
 import { BASE_URL } from '../utils/constants';
+import { resolveSessionToken } from '../providers/auth';
 
 export const linksAPI = {
-  list: () => fetch(`${BASE_URL}/api/mday/links/list`).then((res) => res.json()),
+  list: () => fetch(`${BASE_URL}/api/mday/links/list`, {
+    headers: {
+      'Authorization': `Bearer ${resolveSessionToken()}`,
+    },
+  }).then((res) => res.json()),
   create: (link) => fetch(`${BASE_URL}/api/mday/links/create`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${resolveSessionToken()}`,
     },
     body: JSON.stringify(link),
   }),
@@ -13,6 +19,7 @@ export const linksAPI = {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${resolveSessionToken()}`,
     },
     body: JSON.stringify(link),
   }),
@@ -20,6 +27,7 @@ export const linksAPI = {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${resolveSessionToken()}`,
     },
   }),
 };

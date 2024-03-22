@@ -1,20 +1,31 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { useEffect } from 'react';
 import mondaySdk from 'monday-sdk-js';
+import { create } from 'zustand'
 
 import { authAPI } from '../api/auth';
 import { AUTH_CHECK_STATUS } from '../utils/constants';
 
 const monday = mondaySdk();
 
-const AuthContext = createContext({ status: AUTH_CHECK_STATUS.UNKNOWN });
+const useAuthStore = create((set) => ({
+  status: AUTH_CHECK_STATUS.UNKNOWN,
+  user: null,
+  workspace: null,
+  sessionToken: null,
+  updateStatus: (status) => set((prev) => ({ ...prev, status })),
+  initialize: (state) => set((prev) => ({ ...prev, ...state })),
+}));
+
+const useAuth = () => useAuthStore((state) => ({
+  status: state.status,
+  user: state.user,
+  workspace: state.workspace,
+}));
+
+const resolveSessionToken = () => useAuthStore.getState().sessionToken;
 
 const AuthProvider = ({ children }) => {
-  const [authContext, setAuthContext] = useState({ status: AUTH_CHECK_STATUS.UNKNOWN });
-
-  const contextValue = useMemo(() => ({
-    ...authContext,
-    updateStatus: (status) => setAuthContext((prev) => ({ ...prev, status })),
-  }), [authContext]);
+  const { initialize, updateStatus } = useAuthStore((state) => state);
 
   const handleInitialisation = async () => {
     try {
@@ -24,19 +35,26 @@ const AuthProvider = ({ children }) => {
       const response = await authAPI.check({ workspace: Number(workspaceId), user: Number(user.id) });
 
       if (response.ok) {
-        const { status } = await response.json();
+        const { status, sessionToken } = await response.json();
+
+        console.log('status', status);
 
         if (status === 'found') {
-          setAuthContext({ status: AUTH_CHECK_STATUS.AUTHENTICATED, user, workspace: workspaceId });
+          initialize({
+            status: AUTH_CHECK_STATUS.AUTHENTICATED,
+            user,
+            workspace: workspaceId,
+            sessionToken,
+          });
         } else {
-          setAuthContext({ status: AUTH_CHECK_STATUS.NEEDS_SETUP, user, workspace: workspaceId });
+          initialize({ status: AUTH_CHECK_STATUS.NEEDS_SETUP, user, workspace: workspaceId });
         }
       } else {
-        setAuthContext({ status: AUTH_CHECK_STATUS.FAILED });
+        updateStatus(AUTH_CHECK_STATUS.FAILED);
       }
     } catch (e) {
       console.error(e);
-      setAuthContext({ status: AUTH_CHECK_STATUS.FAILED });
+      updateStatus(AUTH_CHECK_STATUS.FAILED);
     }
   }
 
@@ -45,17 +63,10 @@ const AuthProvider = ({ children }) => {
     // Read more about it here: https://developer.monday.com/apps/docs/mondayexecute#value-created-for-user/
     // monday.execute("valueCreatedForUser");
     handleInitialisation();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
+  return <>{children}</>;
 }
 
-const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-}
-
-export { AuthProvider, useAuth };
+export { AuthProvider, useAuth, resolveSessionToken };
