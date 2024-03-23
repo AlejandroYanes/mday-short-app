@@ -16,11 +16,7 @@ const useAuthStore = create((set) => ({
   initialize: (state) => set((prev) => ({ ...prev, ...state })),
 }));
 
-const useAuth = () => useAuthStore((state) => ({
-  status: state.status,
-  user: state.user,
-  workspace: state.workspace,
-}));
+const useAuth = () => useAuthStore((state) => state);
 
 const resolveSessionToken = () => useAuthStore.getState().sessionToken;
 
@@ -29,7 +25,7 @@ const updateAuthStatus = (status) => {
 }
 
 const AuthProvider = ({ children }) => {
-  const { initialize, updateStatus } = useAuthStore((state) => state);
+  const { initialize, updateStatus } = useAuth();
 
   const handleInitialisation = async () => {
     try {
