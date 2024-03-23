@@ -1,6 +1,6 @@
 /* eslint-disable react/no-children-prop,max-len */
 import { useRef, useState } from 'react';
-import { Button, Modal, ModalContent, ModalFooterButtons, ModalHeader, TextField, Text } from 'monday-ui-react-core';
+import { Button, Modal, ModalContent, ModalFooterButtons, ModalHeader, TextField } from 'monday-ui-react-core';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';

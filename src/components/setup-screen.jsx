@@ -53,7 +53,7 @@ export default function SetupScreen() {
 
         switch (status) {
           case 'workspace-slug-exists':
-            setError('This workspace name is already taken.');
+            setError('This short name is already taken.');
             break;
           case 'workspace-exists':
             setGlobalError('This workspace has already been set up. Please contact support to find out more.');
