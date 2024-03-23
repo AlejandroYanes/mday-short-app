@@ -1,4 +1,14 @@
-import { Flex, Link, Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow } from 'monday-ui-react-core';
+import {
+  Flex,
+  Link,
+  Table,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableHeaderCell,
+  TableRow,
+  Text,
+} from 'monday-ui-react-core';
 // eslint-disable-next-line import/no-unresolved
 import { Heading } from 'monday-ui-react-core/next';
 import { useQuery } from '@tanstack/react-query';
@@ -69,9 +79,9 @@ export default function LinksList() {
             {results.map((link) => (
               <TableRow key={link.id}>
                 <TableCell>
-                  <span className="link-cell__label">
+                  <Text type={Text.types.TEXT1} element="p" className="link-cell__label">
                     {link.url}
-                  </span>
+                  </Text>
                 </TableCell>
                 <TableCell>
                   <Link href={`${BASE_URL}/visit/${link.wslug}/${link.slug}`} text={link.slug} />
