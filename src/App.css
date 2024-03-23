@@ -53,6 +53,11 @@ code {
   max-width: 100%
 }
 
+.table-row {
+  height: unset;
+  min-height: var(--table-row-size);
+}
+
 .table-cell--center {
   display: flex;
   justify-content: center;
@@ -62,6 +67,8 @@ code {
 .link-cell__label {
   font-size: 14px;
   line-height: 18px;
+  width: 100%;
+  word-break: break-all;
 }
 
 .link-modal__content {

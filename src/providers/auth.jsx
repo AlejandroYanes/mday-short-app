@@ -3,7 +3,7 @@ import mondaySdk from 'monday-sdk-js';
 import { create } from 'zustand'
 
 import { authAPI } from '../api/auth';
-import { APP_STATUS } from '../utils/constants';
+import { APP_STATUS, DEFAULT_USER, DEFAULT_WORKSPACE } from '../utils/constants';
 
 const monday = mondaySdk();
 
@@ -30,9 +30,15 @@ const AuthProvider = ({ children }) => {
   const handleInitialisation = async () => {
     try {
       const mondayContext = await monday.get('context');
-      const { workspaceId, user } = mondayContext.data;
+      let workspaceId = DEFAULT_WORKSPACE;
+      let userId = DEFAULT_USER;
 
-      const response = await authAPI.check({ workspace: Number(workspaceId), user: Number(user.id) });
+      if (mondayContext.data) {
+        workspaceId = Number(mondayContext.data.workspaceId);
+        userId = Number(mondayContext.data.user.id);
+      }
+
+      const response = await authAPI.check({ workspace: workspaceId, user: userId });
 
       if (response.ok) {
         const { status, sessionToken } = await response.json();
@@ -40,14 +46,14 @@ const AuthProvider = ({ children }) => {
         if (status === 'found') {
           initialize({
             status: APP_STATUS.AUTHENTICATED,
-            user: Number(user.id),
+            user: userId,
             workspace: workspaceId,
             sessionToken,
           });
         } else {
           initialize({
             status: APP_STATUS.NEEDS_SETUP,
-            user: Number(user.id),
+            user: userId,
             workspace: workspaceId,
           });
         }

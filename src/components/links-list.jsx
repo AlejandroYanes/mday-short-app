@@ -77,7 +77,7 @@ export default function LinksList() {
           </TableHeader>
           <TableBody>
             {results.map((link) => (
-              <TableRow key={link.id}>
+              <TableRow key={link.id} className="table-row">
                 <TableCell>
                   <Text type={Text.types.TEXT1} element="p" className="link-cell__label">
                     {link.url}
