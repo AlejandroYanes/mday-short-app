@@ -22,7 +22,7 @@ import { KEBAB_CASE_REGEX } from '../utils/constants';
 
 const schema = z.object({
   url: z.string().url({ message: 'The url is invalid' }),
-  slug: z.string().regex(KEBAB_CASE_REGEX, { message: 'The slug is invalid' }),
+  slug: z.string().regex(KEBAB_CASE_REGEX, { message: 'The short name is invalid' }),
   password: z.string().optional(),
   expiresAt: z.string().optional(),
 });
