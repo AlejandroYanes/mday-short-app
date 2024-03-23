@@ -84,7 +84,7 @@ export default function LinksList() {
                   </Text>
                 </TableCell>
                 <TableCell>
-                  <Link href={`${BASE_URL}/visit/${link.wslug}/${link.slug}`} text={link.slug} />
+                  <Link href={`${BASE_URL}/v/${link.wslug}/${link.slug}`} text={link.slug} />
                 </TableCell>
                 <TableCell>{link.password || '-'}</TableCell>
                 <TableCell>{link.expiresAt ? formatDate(link.expiresAt) : '-'}</TableCell>
