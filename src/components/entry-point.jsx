@@ -2,7 +2,7 @@ import { Text } from 'monday-ui-react-core';
 // eslint-disable-next-line import/no-unresolved
 import { Heading } from 'monday-ui-react-core/next';
 
-import { AUTH_CHECK_STATUS } from '../utils/constants';
+import { APP_STATUS } from '../utils/constants';
 import { useAuth } from '../providers/auth';
 import SetupScreen from './setup-screen';
 import LinksList from './links-list';
@@ -10,7 +10,7 @@ import LinksList from './links-list';
 export default function EntryPoint() {
   const { status } = useAuth();
 
-  if (status === AUTH_CHECK_STATUS.UNKNOWN) {
+  if (status === APP_STATUS.UNKNOWN) {
     return (
       <div className="app">
         <div className="loading-screen">
@@ -20,7 +20,7 @@ export default function EntryPoint() {
     );
   }
 
-  if (status === AUTH_CHECK_STATUS.FAILED) {
+  if (status === APP_STATUS.AUTH_FAILED) {
     return (
       <div className="app">
         <div className="fail-screen">
@@ -35,7 +35,7 @@ export default function EntryPoint() {
 
   }
 
-  if (status === AUTH_CHECK_STATUS.NEEDS_SETUP) {
+  if (status === APP_STATUS.NEEDS_SETUP) {
     return <SetupScreen/>;
   }
 

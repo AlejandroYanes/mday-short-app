@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 import { authAPI } from '../api/auth';
 import { useAuth } from '../providers/auth';
-import { AUTH_CHECK_STATUS, KEBAB_CASE_REGEX } from '../utils/constants';
+import { APP_STATUS, KEBAB_CASE_REGEX } from '../utils/constants';
 
 const slugValidator = z.object({
   name: z.string().min(1).max(50),
@@ -42,10 +42,10 @@ export default function SetupScreen() {
 
     try {
       setLoading(true);
-      const response = await authAPI.setup({ user: Number(user.id), workspace, ...parse.data });
+      const response = await authAPI.setup({ user, workspace, ...parse.data });
 
       if (response.ok) {
-        updateStatus(AUTH_CHECK_STATUS.AUTHENTICATED);
+        updateStatus(APP_STATUS.AUTHENTICATED);
       } else {
         const { status } = await response.json();
 

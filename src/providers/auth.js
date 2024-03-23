@@ -3,12 +3,12 @@ import mondaySdk from 'monday-sdk-js';
 import { create } from 'zustand'
 
 import { authAPI } from '../api/auth';
-import { AUTH_CHECK_STATUS } from '../utils/constants';
+import { APP_STATUS } from '../utils/constants';
 
 const monday = mondaySdk();
 
 const useAuthStore = create((set) => ({
-  status: AUTH_CHECK_STATUS.UNKNOWN,
+  status: APP_STATUS.UNKNOWN,
   user: null,
   workspace: null,
   sessionToken: null,
@@ -24,6 +24,10 @@ const useAuth = () => useAuthStore((state) => ({
 
 const resolveSessionToken = () => useAuthStore.getState().sessionToken;
 
+const updateAuthStatus = (status) => {
+  useAuthStore.getState().updateStatus(status);
+}
+
 const AuthProvider = ({ children }) => {
   const { initialize, updateStatus } = useAuthStore((state) => state);
 
@@ -37,24 +41,26 @@ const AuthProvider = ({ children }) => {
       if (response.ok) {
         const { status, sessionToken } = await response.json();
 
-        console.log('status', status);
-
         if (status === 'found') {
           initialize({
-            status: AUTH_CHECK_STATUS.AUTHENTICATED,
-            user,
+            status: APP_STATUS.AUTHENTICATED,
+            user: Number(user.id),
             workspace: workspaceId,
             sessionToken,
           });
         } else {
-          initialize({ status: AUTH_CHECK_STATUS.NEEDS_SETUP, user, workspace: workspaceId });
+          initialize({
+            status: APP_STATUS.NEEDS_SETUP,
+            user: Number(user.id),
+            workspace: workspaceId,
+          });
         }
       } else {
-        updateStatus(AUTH_CHECK_STATUS.FAILED);
+        updateStatus(APP_STATUS.AUTH_FAILED);
       }
     } catch (e) {
       console.error(e);
-      updateStatus(AUTH_CHECK_STATUS.FAILED);
+      updateStatus(APP_STATUS.AUTH_FAILED);
     }
   }
 
@@ -69,4 +75,9 @@ const AuthProvider = ({ children }) => {
   return <>{children}</>;
 }
 
-export { AuthProvider, useAuth, resolveSessionToken };
+export {
+  AuthProvider,
+  useAuth,
+  resolveSessionToken,
+  updateAuthStatus,
+};

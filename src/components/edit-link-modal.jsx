@@ -18,13 +18,39 @@ import { z } from 'zod';
 import { linksAPI } from '../api/links';
 import { queryClient } from '../utils/query';
 import { stripTimezone } from '../utils/dates';
+import { KEBAB_CASE_REGEX } from '../utils/constants';
 
 const schema = z.object({
-  url: z.string().url(),
-  slug: z.string().min(4),
+  url: z.string().url({ message: 'The url is invalid' }),
+  slug: z.string().regex(KEBAB_CASE_REGEX, { message: 'The slug is invalid' }),
   password: z.string().optional(),
   expiresAt: z.string().optional(),
 });
+
+const slugSuggestion = (
+  <div style={{ paddingLeft: '14px', marginTop: '4px' }}>
+    <span style={{fontSize: '14px' }}>
+      Use words linked by {`"-"`} and do not use any other <br/>
+      special character (eg: /, %, $, etc). Preferable use 2-5 words.
+    </span>
+  </div>
+);
+
+const passwordSuggestion = (
+  <div style={{paddingLeft: '14px', marginTop: '4px' }}>
+    <span style={{fontSize: '14px' }}>
+      In case you want to restrict who can access the link.
+    </span>
+  </div>
+);
+
+const expiresAtSuggestion = (
+  <div style={{paddingLeft: '14px', marginTop: '4px' }}>
+    <span style={{fontSize: '14px' }}>
+      Set an expiration date for the link, after this date the link will be disabled.
+    </span>
+  </div>
+);
 
 export default function EditLinkModal(props) {
   const { link } = props;
@@ -110,6 +136,10 @@ export default function EditLinkModal(props) {
                     title="URL"
                     placeholder="https://example.com"
                     type={TextField.types.URL}
+                    validation={{
+                      status: form.formState.errors.url ? 'error' : undefined,
+                      text: form.formState.errors.url?.message,
+                    }}
                     {...field}
                   />
                 )}
@@ -125,7 +155,7 @@ export default function EditLinkModal(props) {
                     placeholder="nice-short-name"
                     validation={{
                       status: form.formState.errors.slug ? 'error' : undefined,
-                      text: form.formState.errors.slug?.message,
+                      text: form.formState.errors.slug?.message ?? slugSuggestion,
                     }}
                     {...field}
                   />
@@ -138,6 +168,9 @@ export default function EditLinkModal(props) {
                   <TextField
                     title="Password"
                     placeholder="a memorable password"
+                    validation={{
+                      text: passwordSuggestion,
+                    }}
                     {...field}
                   />
                 )}
@@ -149,6 +182,9 @@ export default function EditLinkModal(props) {
                   <TextField
                     title="Expires On"
                     type={TextField.types.DATE}
+                    validation={{
+                      text: expiresAtSuggestion,
+                    }}
                     {...field}
                   />
                 )}
