@@ -10,6 +10,7 @@ export const authAPI = {
       body: JSON.stringify({ workspace, user, name }),
     })
   ),
+
   setup: ({ user, workspace }) => (
     fetch(`${API_URL}/auth/setup`, {
       method: 'POST',

@@ -8,6 +8,7 @@ export const linksAPI = {
       'Authorization': `Bearer ${resolveSessionToken()}`,
     },
   }).then(handle401).then((res) => res.json()),
+
   create: (link) => fetch(`${API_URL}/links/create`, {
     method: 'POST',
     headers: {
@@ -16,6 +17,7 @@ export const linksAPI = {
     },
     body: JSON.stringify(link),
   }).then(handle401),
+
   update: (link) => fetch(`${API_URL}/links/update`, {
     method: 'PUT',
     headers: {
@@ -24,6 +26,7 @@ export const linksAPI = {
     },
     body: JSON.stringify(link),
   }).then(handle401),
+
   delete: (id) => fetch(`${API_URL}/links/delete/${id}`, {
     method: 'DELETE',
     headers: {

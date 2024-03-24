@@ -8,6 +8,7 @@ export const usersAPI = {
       'Authorization': `Bearer ${resolveSessionToken()}`,
     },
   }).then(handle401).then((res) => res.json()),
+
   changeStatus: (id, status) => fetch(`${API_URL}/users/change-status/${id}`, {
     method: 'PATCH',
     headers: {
@@ -16,6 +17,7 @@ export const usersAPI = {
     },
     body: JSON.stringify({ status }),
   }).then(handle401),
+
   changeRole: (id, role) => fetch(`${API_URL}/users/change-role/${id}`, {
     method: 'PATCH',
     headers: {
@@ -24,6 +26,7 @@ export const usersAPI = {
     },
     body: JSON.stringify({ role }),
   }).then(handle401),
+
   delete: (id) => fetch(`${API_URL}/users/delete/${id}`, {
     method: 'DELETE',
     headers: {
