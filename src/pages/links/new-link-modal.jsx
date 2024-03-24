@@ -1,6 +1,8 @@
 /* eslint-disable react/no-children-prop,max-len */
 import { useRef, useState } from 'react';
 import { Button, Modal, ModalContent, ModalFooterButtons, ModalHeader, TextField } from 'monday-ui-react-core';
+// eslint-disable-next-line import/no-unresolved
+import { Heading } from 'monday-ui-react-core/next';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -103,7 +105,13 @@ export default function NewLinkModal() {
         onClose={handleClose}
         closeButtonAriaLabel="close"
       >
-        <ModalHeader title="Add a new link"/>
+        <ModalHeader
+          title={
+            <Heading type={Heading.types.H3}>
+            Add a new link
+            </Heading>
+          }
+        />
         <ModalContent>
           <form>
             <div className="link-modal__content">

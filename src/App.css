@@ -66,6 +66,10 @@ code {
   max-width: 100%
 }
 
+.table-container--spaced {
+  margin-top: 64px;
+}
+
 .table-row {
   height: unset;
   min-height: var(--table-row-size);
@@ -144,4 +148,8 @@ code {
   height: 100%;
   max-width: 300px;
   margin: 0 auto;
+}
+
+.table-dropdown {
+  width: 100%;
 }

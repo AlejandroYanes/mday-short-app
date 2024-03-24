@@ -7,17 +7,18 @@ import {
   ModalContent,
   ModalFooterButtons,
   ModalHeader,
+  Text,
 } from 'monday-ui-react-core';
 // eslint-disable-next-line import/no-unresolved
 import { Heading } from 'monday-ui-react-core/next';
 // eslint-disable-next-line import/no-unresolved
 import { Delete } from 'monday-ui-react-core/icons';
 
-import { linksAPI } from '../../api/links';
+import { usersAPI } from '../../api/users';
 import { queryClient } from '../../utils/query';
 
-export default function DeleteLinkModal(props) {
-  const { link } = props;
+export default function DeleteUserModal(props) {
+  const { user } = props;
   const [show, setShow] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const openModalButtonRef = useRef(null);
@@ -29,10 +30,10 @@ export default function DeleteLinkModal(props) {
 
   const deleteLink = async () => {
     try {
-      const response = await linksAPI.delete(link.id);
+      const response = await usersAPI.delete(user.id);
 
       if (response.ok) {
-        await queryClient.invalidateQueries({ queryKey: ['links'] });
+        await queryClient.invalidateQueries({ queryKey: ['users'] });
         setShow(false);
       } else {
         if (response.field === 'not-found') {
@@ -75,7 +76,10 @@ export default function DeleteLinkModal(props) {
           }
         />
         <ModalContent className="link-modal__content">
-          Are you sure you want to delete the link? This action cannot be undone.
+          <Text type={Text.types.TEXT1} element="p">
+            Are you sure you want to remove <strong>{user.name}</strong> from this workspace?
+            This action cannot be undone.
+          </Text>
           {errorMessage ? (
             <span style={{color: 'var(--color-error)'}}>
               {errorMessage}
@@ -83,7 +87,7 @@ export default function DeleteLinkModal(props) {
           ) : null}
         </ModalContent>
         <ModalFooterButtons
-          primaryButtonText="Delete"
+          primaryButtonText="Remove"
           secondaryButtonText="Cancel"
           onPrimaryButtonClick={deleteLink}
           onSecondaryButtonClick={handleClose}

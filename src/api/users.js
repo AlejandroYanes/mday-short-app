@@ -9,7 +9,7 @@ export const usersAPI = {
     },
   }).then(handle401).then((res) => res.json()),
   changeStatus: (id, status) => fetch(`${API_URL}/users/change-status/${id}`, {
-    method: 'PUT',
+    method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${resolveSessionToken()}`,
@@ -17,7 +17,7 @@ export const usersAPI = {
     body: JSON.stringify({ status }),
   }).then(handle401),
   changeRole: (id, role) => fetch(`${API_URL}/users/change-role/${id}`, {
-    method: 'PUT',
+    method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${resolveSessionToken()}`,

@@ -47,7 +47,7 @@ const columns = [
     width: 150,
   },
   {
-    id: 'preview',
+    id: 'actions',
     loadingStateType: 'medium-text',
     title: '',
     width: 120,

@@ -5,11 +5,12 @@ import { Link, Graph, Team } from 'monday-ui-react-core/icons';
 
 import ComingSoon from './coming-soon';
 import Links from '../pages/links';
+import Users from '../pages/team';
 
 const renderMap = {
   0: Links,
   1: ComingSoon,
-  2: ComingSoon,
+  2: Users,
 };
 
 const Empty = () => null;

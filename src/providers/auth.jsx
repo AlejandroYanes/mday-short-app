@@ -1,19 +1,16 @@
 import { useEffect } from 'react';
-import mondaySdk from 'monday-sdk-js';
 import { create } from 'zustand'
 
 import { authAPI } from '../api/auth';
+import { monday } from '../utils/monday';
 import { APP_STATUS, DEFAULT_NAME, DEFAULT_USER, DEFAULT_WORKSPACE } from '../utils/constants';
-
-const monday = mondaySdk();
 
 const useAuthStore = create((set) => ({
   status: APP_STATUS.UNKNOWN,
   user: null,
   workspace: null,
   sessionToken: null,
-  updateStatus: (status) => set((prev) => ({ ...prev, status })),
-  initialize: (state) => set((prev) => ({ ...prev, ...state })),
+  updateStore: (state) => set((prev) => ({ ...prev, ...state })),
 }));
 
 const useAuth = () => useAuthStore((state) => state);
@@ -21,11 +18,11 @@ const useAuth = () => useAuthStore((state) => state);
 const resolveSessionToken = () => useAuthStore.getState().sessionToken;
 
 const updateAuthStatus = (status) => {
-  useAuthStore.getState().updateStatus(status);
+  useAuthStore.getState().updateStore({ status });
 }
 
 const AuthProvider = ({ children }) => {
-  const { initialize, updateStatus } = useAuth();
+  const { updateStore } = useAuth();
 
   const handleInitialisation = async () => {
     try {
@@ -37,6 +34,7 @@ const AuthProvider = ({ children }) => {
       const query = await monday.api(`query {
         me {
           is_guest
+          email
           name
           id
         }
@@ -57,7 +55,7 @@ const AuthProvider = ({ children }) => {
         const { status, sessionToken } = await response.json();
 
         if (status === 'found') {
-          initialize({
+          updateStore({
             status: APP_STATUS.AUTHENTICATED,
             user: userId,
             name: userName,
@@ -65,7 +63,7 @@ const AuthProvider = ({ children }) => {
             sessionToken,
           });
         } else {
-          initialize({
+          updateStore({
             status: APP_STATUS.NEEDS_SETUP,
             user: userId,
             name: userName,
@@ -73,11 +71,11 @@ const AuthProvider = ({ children }) => {
           });
         }
       } else {
-        updateStatus(APP_STATUS.AUTH_FAILED);
+        updateStore({ status: APP_STATUS.AUTH_FAILED });
       }
     } catch (e) {
       console.error(e);
-      updateStatus(APP_STATUS.AUTH_FAILED);
+      updateStore({ status: APP_STATUS.AUTH_FAILED });
     }
   }
 

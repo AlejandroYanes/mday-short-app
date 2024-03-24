@@ -10,6 +10,8 @@ import {
   TextField
 } from 'monday-ui-react-core';
 // eslint-disable-next-line import/no-unresolved
+import { Heading } from 'monday-ui-react-core/next';
+// eslint-disable-next-line import/no-unresolved
 import { Edit } from 'monday-ui-react-core/icons';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -122,7 +124,13 @@ export default function EditLinkModal(props) {
         onClose={handleClose}
         closeButtonAriaLabel="close"
       >
-        <ModalHeader title="Update link" />
+        <ModalHeader
+          title={
+            <Heading type={Heading.types.H3}>
+            Update Link
+            </Heading>
+          }
+        />
         <ModalContent>
           <form>
             <div className="link-modal__content">
