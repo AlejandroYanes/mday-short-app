@@ -30,7 +30,8 @@ code {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  padding: 16px;
+  padding: 24px;
+  gap: 24px;
 }
 
 .banner {
@@ -44,8 +45,20 @@ code {
   font-weight: bold;
 }
 
-.tool-bar {
-  margin-bottom: 16px;
+.nav-bar {
+  padding: 0;
+}
+
+.nav-bar ul {
+  padding: 0;
+  height: unset !important;
+  border-top: 1px solid transparent;
+  border-bottom: 2px solid;
+  border-bottom-color: var(--ui-background-color);
+}
+
+.nav-bar li {
+  border: none;
 }
 
 .table-container {
@@ -120,4 +133,15 @@ code {
   gap: 16px;
   width: 300px;
   margin-top: 40px;
+}
+
+.coming-soon {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  max-width: 300px;
+  margin: 0 auto;
 }

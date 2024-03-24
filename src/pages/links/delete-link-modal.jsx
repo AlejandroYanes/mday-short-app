@@ -11,8 +11,8 @@ import {
 // eslint-disable-next-line import/no-unresolved
 import { Delete } from 'monday-ui-react-core/icons';
 
-import { linksAPI } from '../api/links';
-import { queryClient } from '../utils/query';
+import { linksAPI } from '../../api/links';
+import { queryClient } from '../../utils/query';
 
 export default function DeleteLinkModal(props) {
   const { link } = props;

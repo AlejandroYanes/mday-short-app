@@ -3,7 +3,7 @@ import { Button, IconButton, Toast } from 'monday-ui-react-core';
 // eslint-disable-next-line import/no-unresolved
 import { Attach } from 'monday-ui-react-core/icons';
 
-import { BASE_URL } from '../utils/constants';
+import { BASE_URL } from '../../utils/constants';
 
 export default function CopyToClipboard(props) {
   const { link } = props;

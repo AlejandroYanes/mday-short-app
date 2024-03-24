@@ -1,22 +1,22 @@
-import { BASE_URL } from '../utils/constants';
+import { API_URL } from '../utils/constants';
 
 export const authAPI = {
-  check: ({ workspace, user }) => (
-    fetch(`${BASE_URL}/api/mday/auth/check`, {
+  check: ({ workspace, user, name }) => (
+    fetch(`${API_URL}/auth/check`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ workspace, user }),
+      body: JSON.stringify({ workspace, user, name }),
     })
   ),
-  setup: ({ user, workspace, name, wslug }) => (
-    fetch(`${BASE_URL}/api/mday/auth/setup`, {
+  setup: ({ user, workspace }) => (
+    fetch(`${API_URL}/auth/setup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ user, workspace, name, wslug }),
+      body: JSON.stringify({ user, workspace }),
     })
   ),
 };

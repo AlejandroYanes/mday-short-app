@@ -9,26 +9,23 @@ import {
   TableRow,
   Text,
 } from 'monday-ui-react-core';
-// eslint-disable-next-line import/no-unresolved
-import { Heading } from 'monday-ui-react-core/next';
 import { useQuery } from '@tanstack/react-query';
 
-import { linksAPI } from '../api/links';
-import { BASE_URL } from '../utils/constants';
-import { formatDate } from '../utils/dates';
+import { linksAPI } from '../../api/links';
+import { BASE_URL } from '../../utils/constants';
+import { formatDate } from '../../utils/dates';
+import TableEmptyState from '../../components/empty-state';
+import TableErrorState from '../../components/error-state';
 import NewLinkModal from './new-link-modal';
 import EditLinkModal from './edit-link-modal';
 import DeleteLinkModal from './delete-link-modal';
 import CopyToClipboard from './copy-to-clipboard';
 
-const TableEmptyState = () => <Heading style={{ textAlign: 'center', margin: '24px 0' }}>Empty State</Heading>;
-const TableErrorState = () => <Heading style={{ textAlign: 'center', margin: '24px 0' }}>Error State</Heading>;
-
 const columns = [
   {
     id: 'baseLink',
     loadingStateType: 'medium-text',
-    title: 'Board Link',
+    title: 'Link',
     width: 440,
   },
   {
@@ -63,7 +60,7 @@ export default function LinksList() {
 
   return (
     <>
-      <div className="tool-bar">
+      <div>
         <NewLinkModal />
       </div>
       <div className="table-container">

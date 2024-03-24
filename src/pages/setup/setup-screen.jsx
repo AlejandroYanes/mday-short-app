@@ -4,9 +4,9 @@ import { Heading } from 'monday-ui-react-core/next';
 import { Button, TextField, Text } from 'monday-ui-react-core';
 import { z } from 'zod';
 
-import { authAPI } from '../api/auth';
-import { useAuth } from '../providers/auth';
-import { APP_STATUS, KEBAB_CASE_REGEX } from '../utils/constants';
+import { authAPI } from '../../api/auth';
+import { useAuth } from '../../providers/auth';
+import { APP_STATUS, KEBAB_CASE_REGEX } from '../../utils/constants';
 
 const slugValidator = z.object({
   name: z.string().min(1).max(50),
@@ -14,7 +14,7 @@ const slugValidator = z.object({
 });
 
 export default function SetupScreen() {
-  const { user, workspace, updateStatus } = useAuth();
+  const { user, name: userName, workspace, updateStatus } = useAuth();
 
   const [name, setName] = useState('');
   const [wslug, setWslug] = useState('');
@@ -42,14 +42,15 @@ export default function SetupScreen() {
 
     try {
       setLoading(true);
-      const response = await authAPI.setup({ user, workspace, ...parse.data });
+      const response = await authAPI.setup({
+        user: { id: user, name: userName },
+        workspace: { id: workspace, ...parse.data },
+      });
 
       if (response.ok) {
         updateStatus(APP_STATUS.AUTHENTICATED);
       } else {
         const { status } = await response.json();
-
-        console.log('status', status);
 
         switch (status) {
           case 'workspace-slug-exists':

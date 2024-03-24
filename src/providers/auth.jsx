@@ -3,7 +3,7 @@ import mondaySdk from 'monday-sdk-js';
 import { create } from 'zustand'
 
 import { authAPI } from '../api/auth';
-import { APP_STATUS, DEFAULT_USER, DEFAULT_WORKSPACE } from '../utils/constants';
+import { APP_STATUS, DEFAULT_NAME, DEFAULT_USER, DEFAULT_WORKSPACE } from '../utils/constants';
 
 const monday = mondaySdk();
 
@@ -32,13 +32,26 @@ const AuthProvider = ({ children }) => {
       const mondayContext = await monday.get('context');
       let workspaceId = DEFAULT_WORKSPACE;
       let userId = DEFAULT_USER;
+      let userName = DEFAULT_NAME;
+
+      const query = await monday.api(`query {
+        me {
+          is_guest
+          name
+          id
+        }
+      }`);
 
       if (mondayContext.data) {
         workspaceId = Number(mondayContext.data.workspaceId);
         userId = Number(mondayContext.data.user.id);
       }
 
-      const response = await authAPI.check({ workspace: workspaceId, user: userId });
+      if (query?.data?.me) {
+        userName = query.data.me.name;
+      }
+
+      const response = await authAPI.check({ workspace: workspaceId, user: userId, name: userName });
 
       if (response.ok) {
         const { status, sessionToken } = await response.json();
@@ -47,6 +60,7 @@ const AuthProvider = ({ children }) => {
           initialize({
             status: APP_STATUS.AUTHENTICATED,
             user: userId,
+            name: userName,
             workspace: workspaceId,
             sessionToken,
           });
@@ -54,6 +68,7 @@ const AuthProvider = ({ children }) => {
           initialize({
             status: APP_STATUS.NEEDS_SETUP,
             user: userId,
+            name: userName,
             workspace: workspaceId,
           });
         }

@@ -5,9 +5,9 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
-import { linksAPI } from '../api/links';
-import { queryClient } from '../utils/query';
-import { KEBAB_CASE_REGEX } from '../utils/constants';
+import { linksAPI } from '../../api/links';
+import { queryClient } from '../../utils/query';
+import { KEBAB_CASE_REGEX } from '../../utils/constants';
 
 const schema = z.object({
   url: z.string().url({ message: 'The url is invalid' }),

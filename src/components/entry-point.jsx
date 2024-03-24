@@ -4,8 +4,8 @@ import { Heading } from 'monday-ui-react-core/next';
 
 import { APP_STATUS } from '../utils/constants';
 import { useAuth } from '../providers/auth';
-import SetupScreen from './setup-screen';
-import LinksList from './links-list';
+import SetupScreen from '../pages/setup';
+import MainView from './main-view';
 
 export default function EntryPoint() {
   const { status } = useAuth();
@@ -39,9 +39,5 @@ export default function EntryPoint() {
     return <SetupScreen/>;
   }
 
-  return (
-    <div className="app">
-      <LinksList/>
-    </div>
-  );
+  return <MainView />;
 }
