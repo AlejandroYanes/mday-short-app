@@ -14,7 +14,7 @@ const slugValidator = z.object({
 });
 
 export default function SetupScreen() {
-  const { user, name: userName, workspace, updateStore } = useAuth();
+  const { user, name: userName, email, workspace, updateStore } = useAuth();
 
   const [name, setName] = useState('');
   const [wslug, setWslug] = useState('');
@@ -27,13 +27,13 @@ export default function SetupScreen() {
     const parse = slugValidator.safeParse({ name, wslug });
 
     if (!parse.success) {
-      setError('Please provide a valid workspace name.');
+      setGlobalError('Please provide a valid workspace name and short name.');
       return;
     }
 
     const slots = wslug.split('-');
     if (slots.length > 3) {
-      setError('Please keep the workspace name to a maximum of 3 words.');
+      setError('Please keep the short name to a maximum of 3 words.');
       return;
     }
 
@@ -43,7 +43,7 @@ export default function SetupScreen() {
     try {
       setLoading(true);
       const response = await authAPI.setup({
-        user: { id: user, name: userName },
+        user: { id: user, name: userName, email },
         workspace: { id: workspace, ...parse.data },
       });
 

@@ -87,7 +87,7 @@ const AuthProvider = ({ children }) => {
               workspace: workspaceId,
             });
             break;
-          default:
+          case 'not-found':
             updateStore({
               status: APP_STATUS.NEEDS_SETUP,
               user: userId,
@@ -95,6 +95,10 @@ const AuthProvider = ({ children }) => {
               email,
               workspace: workspaceId,
             });
+            break;
+          default:
+            updateStore({ status: APP_STATUS.AUTH_FAILED });
+            break;
         }
       } else {
         updateStore({ status: APP_STATUS.AUTH_FAILED });
