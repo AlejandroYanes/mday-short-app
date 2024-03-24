@@ -20,24 +20,51 @@ export default function EntryPoint() {
     );
   }
 
-  if (status === APP_STATUS.AUTH_FAILED) {
+  if (status === APP_STATUS.PENDING) {
     return (
       <div className="app">
         <div className="fail-screen">
-          <Heading align={Heading.align.CENTER}>Error</Heading>
+          <Heading align={Heading.align.CENTER}>Hi there</Heading>
           <Text type={Text.types.TEXT1} align={Text.align.CENTER}>
-            An error occurred while trying to authenticate you.
-            Please try again later.
+            Your account is pending approval.
+            Please wait for an admin to approve your request.
           </Text>
         </div>
       </div>
     );
+  }
 
+  if (status === APP_STATUS.INVITED) {
+    return (
+      <div className="app">
+        <div className="fail-screen">
+          <Heading align={Heading.align.CENTER}>Hi there</Heading>
+          <Text type={Text.types.TEXT1} align={Text.align.CENTER}>
+            You have been invited to join this workspace.
+            Please check your email for an invitation link.
+          </Text>
+        </div>
+      </div>
+    );
   }
 
   if (status === APP_STATUS.NEEDS_SETUP) {
     return <SetupScreen/>;
   }
 
-  return <MainView />;
+  if (status === APP_STATUS.AUTHENTICATED) {
+    return <MainView/>;
+  }
+
+  return (
+    <div className="app">
+      <div className="fail-screen">
+        <Heading align={Heading.align.CENTER}>Error</Heading>
+        <Text type={Text.types.TEXT1} align={Text.align.CENTER}>
+          An error occurred while trying to authenticate you.
+          Please try again later.
+        </Text>
+      </div>
+    </div>
+  );
 }

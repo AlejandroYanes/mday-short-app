@@ -15,10 +15,17 @@ export const DEFAULT_NAME = (
     ? process.env.REACT_APP_DEFAULT_NAME
     : null
 );
+export const DEFAULT_EMAIL = (
+  window.origin.startsWith('http://localhost') && process.env.REACT_APP_DEFAULT_EMAIL
+    ? process.env.REACT_APP_DEFAULT_EMAIL
+    : null
+);
 
 export const APP_STATUS = {
   AUTHENTICATED: 'AUTHENTICATED',
   NEEDS_SETUP: 'NEEDS_SETUP',
+  PENDING: 'PENDING',
+  INVITED: 'INVITED',
   UNKNOWN: 'UNKNOWN',
   AUTH_FAILED: 'FAILED',
 }

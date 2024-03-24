@@ -1,25 +1,23 @@
 import {
+  Dropdown,
   Flex,
   Table,
   TableBody,
   TableCell,
   TableHeader,
   TableHeaderCell,
-  TableRow,
-  Dropdown,
-  Button, IconButton
+  TableRow
 } from 'monday-ui-react-core';
 // eslint-disable-next-line import/no-unresolved
-import { Delete } from 'monday-ui-react-core/icons';
 import { useQuery } from '@tanstack/react-query';
 
 import { usersAPI } from '../../api/users';
 import { monday } from '../../utils/monday';
+import { queryClient } from '../../utils/query';
+import { useAuth } from '../../providers/auth';
 import TableEmptyState from '../../components/empty-state';
 import TableErrorState from '../../components/error-state';
-import { queryClient } from '../../utils/query';
 import DeleteUserModal from './delete-user-modal';
-import { useAuth } from '../../providers/auth';
 
 const columns = [
   {

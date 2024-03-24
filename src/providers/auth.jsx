@@ -3,7 +3,7 @@ import { create } from 'zustand'
 
 import { authAPI } from '../api/auth';
 import { monday } from '../utils/monday';
-import { APP_STATUS, DEFAULT_NAME, DEFAULT_USER, DEFAULT_WORKSPACE } from '../utils/constants';
+import { APP_STATUS, DEFAULT_EMAIL, DEFAULT_NAME, DEFAULT_USER, DEFAULT_WORKSPACE } from '../utils/constants';
 
 const useAuthStore = create((set) => ({
   status: APP_STATUS.UNKNOWN,
@@ -27,9 +27,12 @@ const AuthProvider = ({ children }) => {
   const handleInitialisation = async () => {
     try {
       const mondayContext = await monday.get('context');
+
+      // These are meant to be able to work locally outside of Monday.com
       let workspaceId = DEFAULT_WORKSPACE;
       let userId = DEFAULT_USER;
-      let userName = DEFAULT_NAME;
+      let name = DEFAULT_NAME;
+      let email = DEFAULT_EMAIL;
 
       const query = await monday.api(`query {
         me {
@@ -46,29 +49,52 @@ const AuthProvider = ({ children }) => {
       }
 
       if (query?.data?.me) {
-        userName = query.data.me.name;
+        name = query.data.me.name;
+        email = query.data.me.email;
       }
 
-      const response = await authAPI.check({ workspace: workspaceId, user: userId, name: userName });
+      const response = await authAPI.check({ workspace: workspaceId, user: userId, name: name, email });
 
       if (response.ok) {
         const { status, sessionToken } = await response.json();
 
-        if (status === 'found') {
-          updateStore({
-            status: APP_STATUS.AUTHENTICATED,
-            user: userId,
-            name: userName,
-            workspace: workspaceId,
-            sessionToken,
-          });
-        } else {
-          updateStore({
-            status: APP_STATUS.NEEDS_SETUP,
-            user: userId,
-            name: userName,
-            workspace: workspaceId,
-          });
+        switch (status) {
+          case 'found':
+            updateStore({
+              status: APP_STATUS.AUTHENTICATED,
+              user: userId,
+              name,
+              email,
+              workspace: workspaceId,
+              sessionToken,
+            });
+            break;
+          case 'pending':
+            updateStore({
+              status: APP_STATUS.PENDING,
+              user: userId,
+              name,
+              email,
+              workspace: workspaceId,
+            });
+            break;
+          case 'invited':
+            updateStore({
+              status: APP_STATUS.INVITED,
+              user: userId,
+              name,
+              email,
+              workspace: workspaceId,
+            });
+            break;
+          default:
+            updateStore({
+              status: APP_STATUS.NEEDS_SETUP,
+              user: userId,
+              name,
+              email,
+              workspace: workspaceId,
+            });
         }
       } else {
         updateStore({ status: APP_STATUS.AUTH_FAILED });
