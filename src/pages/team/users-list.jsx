@@ -69,7 +69,7 @@ const resolveOptionValue = (value) => {
 };
 
 export default function UsersList() {
-  const { user: currentUser } = useAuth();
+  const { email: currentUser } = useAuth();
   const { data } = useQuery({ queryKey: ['users'], queryFn: usersAPI.list });
   const results = data?.results || [];
 
@@ -168,7 +168,7 @@ export default function UsersList() {
                     className="table-dropdown"
                     clearable={false}
                     searchable={false}
-                    disabled={user.id === currentUser}
+                    disabled={user.email === currentUser}
                     menuPortalTarget={document.body}
                     options={roleOptions}
                     value={roleOptions.find((op) => op.value === user.role)}
@@ -180,7 +180,7 @@ export default function UsersList() {
                     className="table-dropdown"
                     clearable={false}
                     searchable={false}
-                    disabled={user.id === currentUser}
+                    disabled={user.email === currentUser}
                     menuPortalTarget={document.body}
                     options={statusOptions}
                     value={resolveOptionValue(user.status)}
@@ -189,7 +189,7 @@ export default function UsersList() {
                 </TableCell>
                 <TableCell className="table-cell--center">
                   <Flex gap="12">
-                    <DeleteUserModal user={user} disabled={user.id === currentUser}/>
+                    <DeleteUserModal user={user} disabled={user.email === currentUser}/>
                   </Flex>
                 </TableCell>
               </TableRow>

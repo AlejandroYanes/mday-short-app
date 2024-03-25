@@ -3,11 +3,13 @@ import { create } from 'zustand'
 
 import { authAPI } from '../api/auth';
 import { monday } from '../utils/monday';
-import { APP_STATUS, DEFAULT_EMAIL, DEFAULT_NAME, DEFAULT_USER, DEFAULT_WORKSPACE } from '../utils/constants';
+import { APP_STATUS, DEFAULT_EMAIL, DEFAULT_NAME, DEFAULT_WORKSPACE } from '../utils/constants';
 
 const useAuthStore = create((set) => ({
   status: APP_STATUS.UNKNOWN,
-  user: null,
+  name: null,
+  email: null,
+  role: null,
   workspace: null,
   sessionToken: null,
   updateStore: (state) => set((prev) => ({ ...prev, ...state })),
@@ -30,7 +32,6 @@ const AuthProvider = ({ children }) => {
 
       // These are meant to be able to work locally outside of Monday.com
       let workspace = DEFAULT_WORKSPACE;
-      let user = DEFAULT_USER;
       let name = DEFAULT_NAME;
       let email = DEFAULT_EMAIL;
 
@@ -45,7 +46,6 @@ const AuthProvider = ({ children }) => {
 
       if (mondayContext.data) {
         workspace = Number(mondayContext.data.workspaceId);
-        user = Number(mondayContext.data.user.id);
       }
 
       if (query?.data?.me) {
@@ -53,7 +53,7 @@ const AuthProvider = ({ children }) => {
         email = query.data.me.email;
       }
 
-      const response = await authAPI.check({ workspace, user, name, email });
+      const response = await authAPI.check({ workspace, name, email });
 
       if (response.ok) {
         const { status, sessionToken, role } = await response.json();
@@ -62,18 +62,16 @@ const AuthProvider = ({ children }) => {
           case 'found':
             updateStore({
               status: APP_STATUS.AUTHENTICATED,
-              user,
               name,
               email,
-              workspace,
               role,
+              workspace,
               sessionToken,
             });
             break;
           case 'pending':
             updateStore({
               status: APP_STATUS.PENDING,
-              user,
               name,
               email,
               workspace,
@@ -82,7 +80,6 @@ const AuthProvider = ({ children }) => {
           case 'invited':
             updateStore({
               status: APP_STATUS.INVITED,
-              user,
               name,
               email,
               workspace,
@@ -91,7 +88,6 @@ const AuthProvider = ({ children }) => {
           case 'not-found':
             updateStore({
               status: APP_STATUS.NEEDS_SETUP,
-              user,
               name,
               email,
               workspace,

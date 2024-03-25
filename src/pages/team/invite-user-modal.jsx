@@ -81,7 +81,7 @@ export default function InviteUserModal() {
   return (
     <>
       <Button ref={openModalButtonRef} onClick={() => setShowModal(true)}>
-        Invite someone
+        Invite a new user
       </Button>
       <Modal
         triggerElement={openModalButtonRef.current}
