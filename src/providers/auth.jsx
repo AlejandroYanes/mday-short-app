@@ -56,7 +56,7 @@ const AuthProvider = ({ children }) => {
       const response = await authAPI.check({ workspace, user, name, email });
 
       if (response.ok) {
-        const { status, sessionToken } = await response.json();
+        const { status, sessionToken, role } = await response.json();
 
         switch (status) {
           case 'found':
@@ -66,6 +66,7 @@ const AuthProvider = ({ children }) => {
               name,
               email,
               workspace,
+              role,
               sessionToken,
             });
             break;

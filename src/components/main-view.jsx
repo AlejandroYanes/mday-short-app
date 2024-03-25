@@ -6,6 +6,7 @@ import { Link, Graph, Team } from 'monday-ui-react-core/icons';
 import ComingSoon from './coming-soon';
 import Links from '../pages/links';
 import Users from '../pages/team';
+import { useAuth } from '../providers/auth';
 
 const renderMap = {
   0: Links,
@@ -16,16 +17,24 @@ const renderMap = {
 const Empty = () => null;
 
 export default function MainView() {
+  const { role } = useAuth();
   const [activeTab, setActiveTab] = useState(0);
 
   const Content = renderMap[activeTab] ?? Empty;
 
+  const tabs = [
+    <Tab key="links" icon={Link}>Links</Tab>,
+    <Tab key="analytics" icon={Graph}>Analytics</Tab>,
+  ]
+
+  if (role === 'OWNER') {
+    tabs.push(<Tab key="team" icon={Team}>Team</Tab>);
+  }
+
   return (
     <div className="app">
       <TabList className="nav-bar" activeTabId={activeTab} onTabChange={setActiveTab}>
-        <Tab icon={Link}>Links</Tab>
-        <Tab icon={Graph}>Analytics</Tab>
-        <Tab icon={Team}>Team</Tab>
+        {tabs}
       </TabList>
       <Content/>
     </div>
