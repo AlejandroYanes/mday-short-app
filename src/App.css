@@ -109,7 +109,7 @@ code {
   margin-top: 0;
 }
 
-.fail-screen, .loading-screen {
+.message-screen {
   display: flex;
   flex-direction: column;
   gap: 16px;

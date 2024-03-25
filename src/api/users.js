@@ -18,6 +18,15 @@ export const usersAPI = {
     body: JSON.stringify({ name, email, role }),
   }).then(handle401),
 
+  join: ({ email, workspace }) => fetch(`${API_URL}/users/join`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${resolveSessionToken()}`,
+    },
+    body: JSON.stringify({ email, workspace }),
+  }).then(handle401),
+
   changeStatus: (id, status) => fetch(`${API_URL}/users/change-status/${id}`, {
     method: 'PATCH',
     headers: {

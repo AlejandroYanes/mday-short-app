@@ -85,6 +85,14 @@ const AuthProvider = ({ children }) => {
               workspace,
             });
             break;
+          case 'inactive':
+            updateStore({
+              status: APP_STATUS.INACTIVE,
+              name,
+              email,
+              workspace,
+            });
+            break;
           case 'not-found':
             updateStore({
               status: APP_STATUS.NEEDS_SETUP,
