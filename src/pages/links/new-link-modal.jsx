@@ -10,38 +10,25 @@ import { z } from 'zod';
 import { linksAPI } from '../../api/links';
 import { queryClient } from '../../utils/query';
 import { KEBAB_CASE_REGEX } from '../../utils/constants';
+import InputHint from '../../components/input-hint';
 
 const schema = z.object({
-  url: z.string().url({ message: 'The url is invalid' }),
+  url: z.string().min(1, { message: 'The url can not be empty' }).url({ message: 'The url is invalid' }),
   slug: z.string().regex(KEBAB_CASE_REGEX, { message: 'The short name is invalid' }),
   password: z.string().optional(),
   expiresAt: z.string().optional(),
 });
 
 const slugSuggestion = (
-  <div style={{ paddingLeft: '14px', marginTop: '4px' }}>
-    <span style={{fontSize: '14px' }}>
-      Use words linked by {`"-"`} and do not use any other <br/>
-      special character (eg: /, %, $, etc). Preferable use 2-5 words.
-    </span>
-  </div>
+  <>
+    Use words linked by {`"-"`} and do not use any other <br/>
+    special character (eg: /, %, $, etc). Preferable use 2-5 words.
+  </>
 );
 
-const passwordSuggestion = (
-  <div style={{paddingLeft: '14px', marginTop: '4px' }}>
-    <span style={{fontSize: '14px' }}>
-      In case you want to restrict who can access the link.
-    </span>
-  </div>
-);
+const passwordSuggestion = 'In case you want to restrict who can access the link.';
 
-const expiresAtSuggestion = (
-  <div style={{paddingLeft: '14px', marginTop: '4px' }}>
-    <span style={{fontSize: '14px' }}>
-      Set an expiration date for the link, after this date the link will be disabled.
-    </span>
-  </div>
-);
+const expiresAtSuggestion = 'Set an expiration date for the link, after this date the link will be disabled.';
 
 export default function NewLinkModal() {
   const [showModal, setShowModal] = useState(false);
@@ -127,7 +114,7 @@ export default function NewLinkModal() {
                     type={TextField.types.URL}
                     validation={{
                       status: form.formState.errors.url ? 'error' : undefined,
-                      text: form.formState.errors.url?.message,
+                      text: <InputHint text={form.formState.errors.url?.message} />
                     }}
                     {...field}
                   />
@@ -144,7 +131,7 @@ export default function NewLinkModal() {
                     placeholder="nice-short-name"
                     validation={{
                       status: form.formState.errors.slug ? 'error' : undefined,
-                      text: form.formState.errors.slug?.message ?? slugSuggestion,
+                      text: <InputHint text={slugSuggestion} />
                     }}
                     {...field}
                   />
@@ -158,7 +145,7 @@ export default function NewLinkModal() {
                     title="Password"
                     placeholder="a memorable password"
                     validation={{
-                      text: passwordSuggestion,
+                      text: <InputHint text={passwordSuggestion} />
                     }}
                     {...field}
                   />
@@ -172,7 +159,7 @@ export default function NewLinkModal() {
                     title="Expires On"
                     type={TextField.types.DATE}
                     validation={{
-                      text: expiresAtSuggestion,
+                      text: <InputHint text={expiresAtSuggestion} />
                     }}
                     {...field}
                   />
