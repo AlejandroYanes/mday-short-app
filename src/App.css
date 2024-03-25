@@ -153,3 +153,15 @@ code {
 .table-dropdown {
   width: 100%;
 }
+
+.dropdown__label {
+  font: var(--font-text2-normal);
+  color: var(--primary-text-color);
+  padding-block: 2px;
+  padding-bottom: var(--spacing-xs);
+}
+
+.dropdown__label__asterisk {
+  color: var(--negative-color);
+  margin-left: 2px;
+}

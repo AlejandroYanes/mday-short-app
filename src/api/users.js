@@ -9,6 +9,15 @@ export const usersAPI = {
     },
   }).then(handle401).then((res) => res.json()),
 
+  invite: ({ name, email, role }) => fetch(`${API_URL}/users/invite`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${resolveSessionToken()}`,
+    },
+    body: JSON.stringify({ name, email, role }),
+  }).then(handle401),
+
   changeStatus: (id, status) => fetch(`${API_URL}/users/change-status/${id}`, {
     method: 'PATCH',
     headers: {

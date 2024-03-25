@@ -6,7 +6,7 @@ import {
   TableCell,
   TableHeader,
   TableHeaderCell,
-  TableRow
+  TableRow, Text
 } from 'monday-ui-react-core';
 // eslint-disable-next-line import/no-unresolved
 import { useQuery } from '@tanstack/react-query';
@@ -18,6 +18,7 @@ import { useAuth } from '../../providers/auth';
 import TableEmptyState from '../../components/empty-state';
 import TableErrorState from '../../components/error-state';
 import DeleteUserModal from './delete-user-modal';
+import InviteUserModal from './invite-user-modal';
 
 const columns = [
   {
@@ -58,11 +59,14 @@ const statusOptions = [
 ];
 
 const pendingOption = { value: 'PENDING', label: 'Pending' };
-const resolveInitialOption = (value) => (
-  value === pendingOption.value
-    ? pendingOption
-    : statusOptions.find((op) => op.value === value)
-);
+const invitedOption = { value: 'INVITED', label: 'Invited' };
+
+const resolveOptionValue = (value) => {
+  if (value === invitedOption.value) return invitedOption;
+  if (value === pendingOption.value) return pendingOption;
+
+  return statusOptions.find((op) => op.value === value);
+};
 
 export default function UsersList() {
   const { user: currentUser } = useAuth();
@@ -138,53 +142,61 @@ export default function UsersList() {
   }
 
   return (
-    <div className="table-container table-container--spaced">
-      <Table columns={columns} emptyState={<TableEmptyState/>} errorState={<TableErrorState/>}>
-        <TableHeader>
-          <TableHeaderCell title="Name"/>
-          <TableHeaderCell title="Role" className="table-cell--center"/>
-          <TableHeaderCell title="Status" className="table-cell--center"/>
-          <TableHeaderCell title="" className="table-cell--center"/>
-        </TableHeader>
-        <TableBody>
-          {results.map((user) => (
-            <TableRow key={user.id} className="table-row">
-              <TableCell>
-                {user.name}
-              </TableCell>
-              <TableCell className="table-cell--center">
-                <Dropdown
-                  className="table-dropdown"
-                  clearable={false}
-                  searchable={false}
-                  disabled={user.id === currentUser}
-                  menuPortalTarget={document.body}
-                  options={roleOptions}
-                  value={roleOptions.find((op) => op.value === user.role)}
-                  onChange={(option) => handleRoleChange(user.id, option.value)}
-                />
-              </TableCell>
-              <TableCell className="table-cell--center">
-                <Dropdown
-                  className="table-dropdown"
-                  clearable={false}
-                  searchable={false}
-                  disabled={user.id === currentUser}
-                  menuPortalTarget={document.body}
-                  options={statusOptions}
-                  value={resolveInitialOption(user.status)}
-                  onChange={(option) => handleStatusChange(user.id, option.value)}
-                />
-              </TableCell>
-              <TableCell className="table-cell--center">
-                <Flex gap="12">
-                  <DeleteUserModal user={user} />
-                </Flex>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+    <>
+      <div>
+        <InviteUserModal />
+      </div>
+      <div className="table-container">
+        <Table columns={columns} emptyState={<TableEmptyState/>} errorState={<TableErrorState/>}>
+          <TableHeader>
+            <TableHeaderCell title="Name"/>
+            <TableHeaderCell title="Role" className="table-cell--center"/>
+            <TableHeaderCell title="Status" className="table-cell--center"/>
+            <TableHeaderCell title="" className="table-cell--center"/>
+          </TableHeader>
+          <TableBody>
+            {results.map((user) => (
+              <TableRow key={user.id} className="table-row">
+                <TableCell>
+                  <Flex direction={Flex.directions.COLUMN} align={Flex.align.START}>
+                    <Text type={Text.types.TEXT1}>{user.name}</Text>
+                    <Text type={Text.types.TEXT2}>{user.email}</Text>
+                  </Flex>
+                </TableCell>
+                <TableCell className="table-cell--center">
+                  <Dropdown
+                    className="table-dropdown"
+                    clearable={false}
+                    searchable={false}
+                    disabled={user.id === currentUser}
+                    menuPortalTarget={document.body}
+                    options={roleOptions}
+                    value={roleOptions.find((op) => op.value === user.role)}
+                    onChange={(option) => handleRoleChange(user.id, option.value)}
+                  />
+                </TableCell>
+                <TableCell className="table-cell--center">
+                  <Dropdown
+                    className="table-dropdown"
+                    clearable={false}
+                    searchable={false}
+                    disabled={user.id === currentUser}
+                    menuPortalTarget={document.body}
+                    options={statusOptions}
+                    value={resolveOptionValue(user.status)}
+                    onChange={(option) => handleStatusChange(user.id, option.value)}
+                  />
+                </TableCell>
+                <TableCell className="table-cell--center">
+                  <Flex gap="12">
+                    <DeleteUserModal user={user} disabled={user.id === currentUser}/>
+                  </Flex>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    </>
   );
 }

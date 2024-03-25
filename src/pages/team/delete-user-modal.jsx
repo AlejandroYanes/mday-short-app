@@ -18,7 +18,7 @@ import { usersAPI } from '../../api/users';
 import { queryClient } from '../../utils/query';
 
 export default function DeleteUserModal(props) {
-  const { user } = props;
+  const { user, disabled } = props;
   const [show, setShow] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const openModalButtonRef = useRef(null);
@@ -59,6 +59,7 @@ export default function DeleteUserModal(props) {
         size={Button.sizes.XS}
         kind={Button.kinds.SECONDARY}
         ref={openModalButtonRef}
+        disabled={disabled}
         onClick={() => setShow(true)}
       />
       <Modal

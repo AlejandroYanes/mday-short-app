@@ -137,7 +137,7 @@ export default function EditLinkModal(props) {
               <Controller
                 name="url"
                 control={form.control}
-                render={({field}) => (
+                render={({ field }) => (
                   <TextField
                     required
                     requiredAsterisk
@@ -155,7 +155,7 @@ export default function EditLinkModal(props) {
               <Controller
                 name="slug"
                 control={form.control}
-                render={({field}) => (
+                render={({ field }) => (
                   <TextField
                     required
                     requiredAsterisk
@@ -172,7 +172,7 @@ export default function EditLinkModal(props) {
               <Controller
                 name="password"
                 control={form.control}
-                render={({field}) => (
+                render={({ field }) => (
                   <TextField
                     title="Password"
                     placeholder="a memorable password"
@@ -186,7 +186,7 @@ export default function EditLinkModal(props) {
               <Controller
                 name="expiresAt"
                 control={form.control}
-                render={({field}) => (
+                render={({ field }) => (
                   <TextField
                     title="Expires On"
                     type={TextField.types.DATE}

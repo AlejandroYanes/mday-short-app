@@ -1,46 +1,50 @@
 /* eslint-disable react/no-children-prop,max-len */
 import { useRef, useState } from 'react';
-import { Button, Modal, ModalContent, ModalFooterButtons, ModalHeader, TextField } from 'monday-ui-react-core';
+import {
+  Button,
+  Dropdown, Flex,
+  Modal,
+  ModalContent,
+  ModalFooterButtons,
+  ModalHeader,
+  TextField
+} from 'monday-ui-react-core';
 // eslint-disable-next-line import/no-unresolved
 import { Heading } from 'monday-ui-react-core/next';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
-import { linksAPI } from '../../api/links';
+import { usersAPI } from '../../api/users';
 import { queryClient } from '../../utils/query';
-import { KEBAB_CASE_REGEX } from '../../utils/constants';
 import InputHint from '../../components/input-hint';
 
 const schema = z.object({
-  url: z.string().min(1, { message: 'The url can not be empty' }).url({ message: 'The url is invalid' }),
-  slug: z.string().regex(KEBAB_CASE_REGEX, { message: 'The short name is invalid' }),
-  password: z.string().optional(),
-  expiresAt: z.string().optional(),
+  name: z.string()
+    .min(2, { message: 'The name must have at least 2 characters' })
+    .max(50, { message: 'The name can not have more than 50 characters' }),
+  email: z.string()
+    .min(1, { message: 'The email can not be empty' })
+    .email({ message: 'Please use a valid email' }),
+  role: z.any(),
 });
 
-const slugSuggestion = (
-  <>
-    Use words linked by {`"-"`} and do not use any other <br/>
-    special character (eg: /, %, $, etc). Preferable use 2-5 words.
-  </>
-);
+const roleOptions = [
+  { value: 'OWNER', label: 'Owner' },
+  { value: 'USER', label: 'User' },
+  { value: 'GUEST', label: 'Guest' },
+];
 
-const passwordSuggestion = 'In case you want to restrict who can access the link.';
-
-const expiresAtSuggestion = 'Set an expiration date for the link, after this date the link will be disabled.';
-
-export default function NewLinkModal() {
+export default function InviteUserModal() {
   const [showModal, setShowModal] = useState(false);
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const openModalButtonRef = useRef(null);
 
   const form = useForm({
     values: {
-      url: '',
-      slug: '',
-      password: '',
-      expiresAt: '',
+      name: '',
+      email: '',
+      role: roleOptions[1],
     },
     resolver: zodResolver(schema),
   });
@@ -57,23 +61,16 @@ export default function NewLinkModal() {
 
   const handleSubmit = async () => {
     const payload = form.getValues();
+    console.log(payload);
     try {
-      const response = await linksAPI.create({
-        ...payload,
-        password: payload.password || null,
-        expiresAt: payload.expiresAt || null,
-      });
+      const response = await usersAPI.invite({ ...payload, role: payload.role.value });
 
       if (response.ok) {
-        await queryClient.invalidateQueries({queryKey: ['links']});
+        await queryClient.invalidateQueries({queryKey: ['users']});
         setShowModal(false);
         form.reset();
       } else {
-        if (response.field === 'slug') {
-          form.setError('slug', {type: 'manual', message: response.error});
-        } else {
-          showError();
-        }
+        showError();
       }
     } catch (error) {
       console.error(error);
@@ -84,18 +81,19 @@ export default function NewLinkModal() {
   return (
     <>
       <Button ref={openModalButtonRef} onClick={() => setShowModal(true)}>
-    Add new link
+        Invite someone
       </Button>
       <Modal
         triggerElement={openModalButtonRef.current}
         show={showModal}
         onClose={handleClose}
         closeButtonAriaLabel="close"
+        data-testid="invite-user-modal"
       >
         <ModalHeader
           title={
             <Heading type={Heading.types.H3}>
-            Add a new link
+              Invite a new user
             </Heading>
           }
         />
@@ -103,66 +101,62 @@ export default function NewLinkModal() {
           <form>
             <div className="link-modal__content">
               <Controller
-                name="url"
+                name="name"
                 control={form.control}
                 render={({ field }) => (
                   <TextField
                     required
                     requiredAsterisk
-                    title="URL"
-                    placeholder="https://example.com"
-                    type={TextField.types.URL}
+                    title="Name"
+                    type={TextField.types.TEXT}
+                    size={TextField.sizes.MEDIUM}
                     validation={{
-                      status: form.formState.errors.url ? 'error' : undefined,
-                      text: <InputHint text={form.formState.errors.url?.message} />
+                      status: form.formState.errors.name ? 'error' : undefined,
+                      text: <InputHint text={form.formState.errors.name?.message} />
                     }}
                     {...field}
                   />
                 )}
               />
               <Controller
-                name="slug"
+                name="email"
                 control={form.control}
                 render={({ field }) => (
                   <TextField
                     required
                     requiredAsterisk
-                    title="Short name"
-                    placeholder="nice-short-name"
+                    title="Email"
+                    placeholder="john@acme.com"
+                    type={TextField.types.EMAIL}
+                    size={TextField.sizes.MEDIUM}
                     validation={{
-                      status: form.formState.errors.slug ? 'error' : undefined,
-                      text: <InputHint text={slugSuggestion} />
+                      status: form.formState.errors.email ? 'error' : undefined,
+                      text: <InputHint text={form.formState.errors.email?.message} />
                     }}
                     {...field}
                   />
                 )}
               />
               <Controller
-                name="password"
+                name="role"
                 control={form.control}
                 render={({ field }) => (
-                  <TextField
-                    title="Password"
-                    placeholder="a memorable password"
-                    validation={{
-                      text: <InputHint text={passwordSuggestion} />
-                    }}
-                    {...field}
-                  />
-                )}
-              />
-              <Controller
-                name="expiresAt"
-                control={form.control}
-                render={({ field }) => (
-                  <TextField
-                    title="Expires On"
-                    type={TextField.types.DATE}
-                    validation={{
-                      text: <InputHint text={expiresAtSuggestion} />
-                    }}
-                    {...field}
-                  />
+                  <Flex direction={Flex.directions.COLUMN} align={Flex.align.START}>
+                    <label htmlFor="role" className="dropdown__label">
+                      Role
+                      <span className="dropdown__label__asterisk">*</span>
+                    </label>
+                    <Dropdown
+                      required
+                      requiredAsterisk
+                      className="table-dropdown"
+                      clearable={false}
+                      searchable={false}
+                      menuPosition="fixed"
+                      options={roleOptions}
+                      {...field}
+                    />
+                  </Flex>
                 )}
               />
             </div>
@@ -172,6 +166,7 @@ export default function NewLinkModal() {
               Something went wrong. Please try again. If the issue persists, contact support.
             </span>
           ) : null}
+          <div style={{ height: '40px' }} />
         </ModalContent>
         <ModalFooterButtons
           primaryButtonText="Confirm"
