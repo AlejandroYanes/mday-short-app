@@ -8,7 +8,7 @@ import { useAuth } from '../../providers/auth';
 import { APP_STATUS } from '../../utils/constants';
 
 export default function InvitationScreen() {
-  const { workspace, email, updateStore } = useAuth();
+  const { workspace, email, token, updateStore } = useAuth();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -16,7 +16,7 @@ export default function InvitationScreen() {
   const handleAcceptInvitation = async () => {
     try {
       setLoading(true);
-      const response = await usersAPI.join({ email, workspace });
+      const response = await usersAPI.join({ email, workspace, token });
       setLoading(false);
 
       if (response.ok) {

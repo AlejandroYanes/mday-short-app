@@ -11,7 +11,7 @@ const useAuthStore = create((set) => ({
   email: null,
   role: null,
   workspace: null,
-  sessionToken: null,
+  token: null,
   updateStore: (state) => set((prev) => ({ ...prev, ...state })),
 }));
 
@@ -29,6 +29,7 @@ const AuthProvider = ({ children }) => {
   const handleInitialisation = async () => {
     try {
       const mondayContext = await monday.get('context');
+      const mondayToken = await monday.get('sessionToken');
 
       // These are meant to be able to work locally outside of Monday.com
       let workspace = DEFAULT_WORKSPACE;
@@ -53,7 +54,9 @@ const AuthProvider = ({ children }) => {
         email = query.data.me.email;
       }
 
-      const response = await authAPI.check({ workspace, name, email });
+      const token = mondayToken.data;
+
+      const response = await authAPI.check({ workspace, name, email, token });
 
       if (response.ok) {
         const { status, sessionToken, role } = await response.json();
@@ -99,6 +102,7 @@ const AuthProvider = ({ children }) => {
               name,
               email,
               workspace,
+              sessionToken: token,
             });
             break;
           default:

@@ -15,7 +15,7 @@ export default function EntryPoint() {
     case APP_STATUS.UNKNOWN:
       return (
         <div className="app">
-          <div className="loading-screen">
+          <div className="message-screen">
             <Heading align={Heading.align.CENTER}>Loading...</Heading>
           </div>
         </div>

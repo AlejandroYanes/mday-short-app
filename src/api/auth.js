@@ -1,23 +1,23 @@
 import { API_URL } from '../utils/constants';
 
 export const authAPI = {
-  check: ({ workspace, name, email }) => (
+  check: ({ workspace, name, email, token }) => (
     fetch(`${API_URL}/auth/check`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ workspace, name, email }),
+      body: JSON.stringify({ workspace, name, email, token }),
     })
   ),
 
-  setup: ({ user, workspace }) => (
+  setup: ({ user, workspace, token }) => (
     fetch(`${API_URL}/auth/setup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ user, workspace }),
+      body: JSON.stringify({ user, workspace, token }),
     })
   ),
 };
