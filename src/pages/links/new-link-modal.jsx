@@ -56,12 +56,12 @@ export default function NewLinkModal() {
   }
 
   const handleSubmit = async () => {
-    const value = form.getValues();
+    const payload = form.getValues();
     try {
       const response = await linksAPI.create({
-        ...value,
-        password: value.password || null,
-        expiresAt: value.expiresAt || null,
+        ...payload,
+        password: payload.password || null,
+        expiresAt: payload.expiresAt || null,
       });
 
       if (response.ok) {
