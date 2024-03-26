@@ -96,19 +96,6 @@ code {
   margin-bottom: 16px;
 }
 
-.monday-storybook-toast {
-  position: fixed;
-  top: 16px;
-  right: 16px;
-  left: unset;
-  width: 380px;
-  z-index: 1000;
-}
-
-.monday-storybook-toast:first-of-type {
-  margin-top: 0;
-}
-
 .message-screen {
   display: flex;
   flex-direction: column;

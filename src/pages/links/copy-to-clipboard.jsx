@@ -1,35 +1,27 @@
-import { useState } from 'react';
-import { Button, IconButton, Toast } from 'monday-ui-react-core';
+import { Button, IconButton } from 'monday-ui-react-core';
 // eslint-disable-next-line import/no-unresolved
 import { Attach } from 'monday-ui-react-core/icons';
 
 import { BASE_URL } from '../../utils/constants';
+import { monday } from '../../utils/monday';
 
 export default function CopyToClipboard(props) {
   const { link } = props;
-  const [toastOpen, setToastOpen] = useState(false);
 
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(`${BASE_URL}/visit/${link.slug}`);
-      setToastOpen(true);
+      monday.execute('notice', {
+        message: 'Short link copied to clipboard',
+        type: 'success', // or "error" (red), or "info" (blue)
+        timeout: 10000,
+      });
     } catch (err) {
       console.error('Failed to copy to clipboard', err);
     }
   }
 
   return (
-    <>
-      <IconButton icon={Attach} size={Button.sizes.XS} kind={Button.kinds.SECONDARY} onClick={copyToClipboard} />
-      <Toast
-        open={toastOpen}
-        type={Toast.types.POSITIVE}
-        onClose={() => setToastOpen(false)}
-        autoHideDuration={2500}
-        className="monday-storybook-toast"
-      >
-        Short link copied to clipboard
-      </Toast>
-    </>
+    <IconButton icon={Attach} size={Button.sizes.XS} kind={Button.kinds.SECONDARY} onClick={copyToClipboard} />
   );
 }
