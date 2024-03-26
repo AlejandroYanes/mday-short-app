@@ -3,7 +3,7 @@ import { create } from 'zustand'
 
 import { authAPI } from '../api/auth';
 import { monday } from '../utils/monday';
-import { APP_STATUS, DEFAULT_EMAIL, DEFAULT_NAME, DEFAULT_WORKSPACE } from '../utils/constants';
+import { APP_STATUS, DEFAULT_EMAIL, DEFAULT_NAME, DEFAULT_TOKEN, DEFAULT_WORKSPACE } from '../utils/constants';
 
 const useAuthStore = create((set) => ({
   status: APP_STATUS.UNKNOWN,
@@ -35,6 +35,7 @@ const AuthProvider = ({ children }) => {
       let workspace = DEFAULT_WORKSPACE;
       let name = DEFAULT_NAME;
       let email = DEFAULT_EMAIL;
+      let token = DEFAULT_TOKEN;
 
       const query = await monday.api(`query {
         me {
@@ -49,12 +50,14 @@ const AuthProvider = ({ children }) => {
         workspace = Number(mondayContext.data.workspaceId);
       }
 
+      if (mondayToken.data) {
+        token = mondayToken.data;
+      }
+
       if (query?.data?.me) {
         name = query.data.me.name;
         email = query.data.me.email;
       }
-
-      const token = mondayToken.data;
 
       const response = await authAPI.check({ workspace, name, email, token });
 

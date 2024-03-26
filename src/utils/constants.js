@@ -16,6 +16,11 @@ export const DEFAULT_EMAIL = (
     ? process.env.REACT_APP_DEFAULT_EMAIL
     : null
 );
+export const DEFAULT_TOKEN = (
+  window.origin.startsWith('http://localhost') && process.env.REACT_APP_DEFAULT_TOKEN
+    ? process.env.REACT_APP_DEFAULT_TOKEN
+    : null
+);
 
 export const APP_STATUS = {
   AUTHENTICATED: 'AUTHENTICATED',
