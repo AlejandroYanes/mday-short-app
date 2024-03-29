@@ -44,6 +44,18 @@ export default function EntryPoint() {
           </div>
         </div>
       );
+    case APP_STATUS.VIEW_ONLY:
+      return (
+        <div className="app">
+          <div className="message-screen">
+            <Heading align={Heading.align.CENTER}>Hi there</Heading>
+            <Text type={Text.types.TEXT1} align={Text.align.CENTER}>
+              As a viewer, you are unable to use this app.
+              Please contact a workspace owner for more information.
+            </Text>
+          </div>
+        </div>
+      );
     case APP_STATUS.INVITED:
       return <InvitationScreen />;
     case APP_STATUS.NEEDS_SETUP:

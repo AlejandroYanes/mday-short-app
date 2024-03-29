@@ -99,6 +99,14 @@ const AuthProvider = ({ children }) => {
               workspace,
             });
             break;
+          case 'view-only':
+            updateStore({
+              status: APP_STATUS.VIEW_ONLY,
+              name,
+              email,
+              workspace,
+            });
+            break;
           case 'not-found':
             updateStore({
               status: APP_STATUS.NEEDS_SETUP,
