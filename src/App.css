@@ -47,14 +47,18 @@ code {
 
 .nav-bar {
   padding: 0;
+  border-top: 1px solid transparent;
+  border-bottom: 2px solid;
+  border-bottom-color: var(--ui-background-color);
+}
+
+.nav-bar [data-testid="tab-list"] {
+  padding: 0;
 }
 
 .nav-bar ul {
   padding: 0;
   height: unset !important;
-  border-top: 1px solid transparent;
-  border-bottom: 2px solid;
-  border-bottom-color: var(--ui-background-color);
 }
 
 .nav-bar li {

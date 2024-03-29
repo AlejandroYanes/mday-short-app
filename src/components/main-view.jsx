@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { TabList, Tab } from 'monday-ui-react-core';
+import { Flex, Link, Tab, TabList } from 'monday-ui-react-core';
 // eslint-disable-next-line import/no-unresolved
-import { Link, Graph, Team } from 'monday-ui-react-core/icons';
+import { Email, Graph, Link as LinkIcon, Team } from 'monday-ui-react-core/icons';
 
 import ComingSoon from './coming-soon';
 import Links from '../pages/links';
@@ -23,7 +23,7 @@ export default function MainView() {
   const Content = renderMap[activeTab] ?? Empty;
 
   const tabs = [
-    <Tab key="links" icon={Link}>Links</Tab>,
+    <Tab key="links" icon={LinkIcon}>Links</Tab>,
     <Tab key="analytics" icon={Graph}>Analytics</Tab>,
   ]
 
@@ -33,9 +33,14 @@ export default function MainView() {
 
   return (
     <div className="app">
-      <TabList className="nav-bar" activeTabId={activeTab} onTabChange={setActiveTab}>
-        {tabs}
-      </TabList>
+      <Flex direction={Flex.directions.ROW} justify={Flex.justify.SPACE_BETWEEN} className="nav-bar">
+        <TabList activeTabId={activeTab} onTabChange={setActiveTab}>
+          {tabs}
+        </TabList>
+        <Flex>
+          <Link href="mailto:contact@mndy.link" text="Contact Us" icon={Email} />
+        </Flex>
+      </Flex>
       <Content/>
     </div>
   );

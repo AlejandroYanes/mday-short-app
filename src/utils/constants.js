@@ -33,4 +33,4 @@ export const APP_STATUS = {
   AUTH_FAILED: 'FAILED',
 }
 
-export const KEBAB_CASE_REGEX = /^[a-z]+(-[a-z]+)*$/;
+export const KEBAB_CASE_REGEX = /^\w+(-\w+)*$/;
