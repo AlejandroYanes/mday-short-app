@@ -1,12 +1,13 @@
 import { useState } from 'react';
 // eslint-disable-next-line import/no-unresolved
 import { Heading } from 'monday-ui-react-core/next';
-import { Button, TextField, Text } from 'monday-ui-react-core';
+import { Button, TextField, Text, Flex } from 'monday-ui-react-core';
 import { z } from 'zod';
 
 import { authAPI } from '../../api/auth';
 import { useAuth } from '../../providers/auth';
 import { APP_STATUS, KEBAB_CASE_REGEX } from '../../utils/constants';
+import { Logo } from '../../components/logo';
 
 const slugValidator = z.object({
   name: z.string().min(1).max(50),
@@ -77,14 +78,14 @@ export default function SetupScreen() {
   return (
     <div className="app">
       <div className="setup-screen">
-        <div className="banner">
-          <Heading>Welcome to</Heading>
-          <div style={{display: 'flex', alignItems: 'center', gap: '4px', marginLeft: '8px'}}>
-            <span className="banner__letters" style={{color: 'var(--negative-color)'}}>M</span>
-            <span className="banner__letters" style={{color: 'var(--warning-color)'}}>S</span>
-            <span className="banner__letters" style={{color: 'var(--positive-color)'}}>L</span>
-          </div>
-        </div>
+        <Flex direction={Flex.directions.COLUMN} align={Flex.align.CENTER} className="banner">
+          <Logo width={120} height={120} />
+          <Heading>Welcome to
+            <span className="banner__letters" style={{color: '#15dec4'}}>Short Links</span>
+            <span className="banner__letters" style={{color: '#2D3D5D'}}>for</span>
+            <span className="banner__letters" style={{color: '#FF2E83'}}>monday.com</span>
+          </Heading>
+        </Flex>
         <Text type={Text.types.TEXT1} align={Text.align.CENTER} element="p">
           It looks like you need to set up your workspace.
           We need a few details to get you started.
@@ -95,7 +96,7 @@ export default function SetupScreen() {
           <br/>
           <br/>
           For instance, if you choose the name <code>acme</code>,
-          a short link would look like <code>https://mday.com/acme/my-first-link</code>.
+          a short link would look like <code>https://mndy.link/v/acme/my-first-link</code>.
         </Text>
         <div className="setup-form">
           <TextField
