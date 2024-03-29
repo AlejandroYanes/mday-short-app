@@ -14,7 +14,7 @@ export default function CopyToClipboard(props) {
       monday.execute('notice', {
         message: 'Short link copied to clipboard',
         type: 'success', // or "error" (red), or "info" (blue)
-        timeout: 10000,
+        timeout: 2000,
       });
     } catch (err) {
       console.error('Failed to copy to clipboard', err);

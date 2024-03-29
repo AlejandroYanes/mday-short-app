@@ -66,7 +66,7 @@ export default function LinksList() {
       <div className="table-container">
         <Table columns={columns} emptyState={<TableEmptyState/>} errorState={<TableErrorState/>}>
           <TableHeader>
-            <TableHeaderCell title="Board Url"/>
+            <TableHeaderCell title="Url"/>
             <TableHeaderCell title="Short name"/>
             <TableHeaderCell title="Password"/>
             <TableHeaderCell title="Expires On"/>
