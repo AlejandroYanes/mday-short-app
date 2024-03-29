@@ -7,6 +7,7 @@ import { useAuth } from '../providers/auth';
 import SetupScreen from '../pages/setup';
 import InvitationScreen from '../pages/invitation';
 import MainView from './main-view';
+import { Logo } from './logo';
 
 export default function EntryPoint() {
   const { status } = useAuth();
@@ -16,6 +17,7 @@ export default function EntryPoint() {
       return (
         <div className="app">
           <div className="message-screen">
+            <Logo width={120} height={120}/>
             <Heading align={Heading.align.CENTER}>Loading...</Heading>
           </div>
         </div>
@@ -24,9 +26,11 @@ export default function EntryPoint() {
       return (
         <div className="app">
           <div className="message-screen">
+            <Logo width={120} height={120} />
             <Heading align={Heading.align.CENTER}>Hi there</Heading>
             <Text type={Text.types.TEXT1} align={Text.align.CENTER}>
               Your account is pending approval.
+              <br/>
               Please wait for a workspace owner to approve your request.
             </Text>
           </div>
@@ -36,9 +40,11 @@ export default function EntryPoint() {
       return (
         <div className="app">
           <div className="message-screen">
+            <Logo width={120} height={120} />
             <Heading align={Heading.align.CENTER}>Hi there</Heading>
             <Text type={Text.types.TEXT1} align={Text.align.CENTER}>
               Your account is inactive.
+              <br/>
               Please contact a workspace owner to activate your account.
             </Text>
           </div>
@@ -48,9 +54,11 @@ export default function EntryPoint() {
       return (
         <div className="app">
           <div className="message-screen">
+            <Logo width={120} height={120} />
             <Heading align={Heading.align.CENTER}>Hi there</Heading>
             <Text type={Text.types.TEXT1} align={Text.align.CENTER}>
               As a viewer, you are unable to use this app.
+              <br/>
               Please contact a workspace owner for more information.
             </Text>
           </div>
@@ -69,6 +77,7 @@ export default function EntryPoint() {
             <Heading align={Heading.align.CENTER}>Error</Heading>
             <Text type={Text.types.TEXT1} align={Text.align.CENTER}>
               An error occurred while trying to authenticate you.
+              <br/>
               Please try again later.
             </Text>
           </div>

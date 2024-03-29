@@ -6,6 +6,7 @@ import { Heading } from 'monday-ui-react-core/next';
 import { usersAPI } from '../../api/users';
 import { useAuth } from '../../providers/auth';
 import { APP_STATUS } from '../../utils/constants';
+import { Logo } from '../../components/logo';
 
 export default function InvitationScreen() {
   const { workspace, email, token, updateStore } = useAuth();
@@ -33,6 +34,7 @@ export default function InvitationScreen() {
   return (
     <div className="app">
       <div className="message-screen">
+        <Logo width={120} height={120} />
         <Heading align={Heading.align.CENTER}>Hi there</Heading>
         <Text type={Text.types.TEXT1} align={Text.align.CENTER}>
           You have been invited to join this workspace.

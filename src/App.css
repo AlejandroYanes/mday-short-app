@@ -111,8 +111,7 @@ code {
   align-items: center;
   justify-content: center;
   height: 100%;
-  max-width: 300px;
-  margin: 0 auto;
+  margin: auto;
 }
 
 .setup-screen {
