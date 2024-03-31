@@ -10,6 +10,7 @@ import { z } from 'zod';
 import { linksAPI } from '../../api/links';
 import { queryClient } from '../../utils/query';
 import { KEBAB_CASE_REGEX } from '../../utils/constants';
+import { monday } from '../../utils/monday';
 import InputHint from '../../components/input-hint';
 
 const schema = z.object({
@@ -65,6 +66,7 @@ export default function NewLinkModal() {
       });
 
       if (response.ok) {
+        monday.execute('valueCreatedForUser');
         await queryClient.invalidateQueries({queryKey: ['links']});
         setShowModal(false);
         form.reset();
