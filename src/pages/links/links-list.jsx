@@ -14,8 +14,10 @@ import { useQuery } from '@tanstack/react-query';
 import { linksAPI } from '../../api/links';
 import { BASE_URL } from '../../utils/constants';
 import { formatDate } from '../../utils/dates';
+import { useAuth } from '../../providers/auth';
 import TableEmptyState from '../../components/empty-state';
 import TableErrorState from '../../components/error-state';
+import RenderIf from '../../components/render-if';
 import NewLinkModal from './new-link-modal';
 import EditLinkModal from './edit-link-modal';
 import DeleteLinkModal from './delete-link-modal';
@@ -55,13 +57,17 @@ const columns = [
 ];
 
 export default function LinksList() {
+  const { role } = useAuth();
+
   const { data } = useQuery({ queryKey: ['links'], queryFn: linksAPI.list });
   const results = data?.results || [];
 
   return (
     <>
-      <div>
-        <NewLinkModal />
+      <div style={{ height: 40 }}>
+        <RenderIf condition={role !== 'GUEST'}>
+          <NewLinkModal />
+        </RenderIf>
       </div>
       <div className="table-container">
         <Table columns={columns} emptyState={<TableEmptyState/>} errorState={<TableErrorState/>}>
@@ -88,8 +94,10 @@ export default function LinksList() {
                 <TableCell className="table-cell--center">
                   <Flex gap="12">
                     <CopyToClipboard link={link} />
-                    <EditLinkModal link={link}/>
-                    <DeleteLinkModal link={link}/>
+                    <RenderIf condition={role !== 'GUEST'}>
+                      <EditLinkModal link={link}/>
+                      <DeleteLinkModal link={link}/>
+                    </RenderIf>
                   </Flex>
                 </TableCell>
               </TableRow>

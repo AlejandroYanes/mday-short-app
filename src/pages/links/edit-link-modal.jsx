@@ -21,6 +21,7 @@ import { linksAPI } from '../../api/links';
 import { queryClient } from '../../utils/query';
 import { stripTimezone } from '../../utils/dates';
 import { KEBAB_CASE_REGEX } from '../../utils/constants';
+import { useAuth } from '../../providers/auth';
 
 const schema = z.object({
   url: z.string().url({ message: 'The url is invalid' }),
@@ -56,6 +57,9 @@ const expiresAtSuggestion = (
 
 export default function EditLinkModal(props) {
   const { link } = props;
+
+  const { role } = useAuth();
+
   const [showModal, setShowModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const openModalButtonRef = useRef(null);
@@ -116,6 +120,7 @@ export default function EditLinkModal(props) {
         size={Button.sizes.XS}
         kind={Button.kinds.SECONDARY}
         ref={openModalButtonRef}
+        disabled={role === 'GUEST'}
         onClick={() => setShowModal(true)}
       />
       <Modal

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { useEffect } from 'react';
 import { create } from 'zustand'
 
@@ -5,6 +6,21 @@ import { authAPI } from '../api/auth';
 import { monday } from '../utils/monday';
 import { APP_STATUS, DEFAULT_EMAIL, DEFAULT_NAME, DEFAULT_TOKEN, DEFAULT_WORKSPACE } from '../utils/constants';
 
+/* This currently does not work
+ * @typedef {{
+ *  status: 'AUTHENTICATED' | 'NEEDS_SETUP' | 'PENDING' | 'INVITED' | 'INACTIVE' | 'VIEW_ONLY' | 'UNKNOWN' | 'FAILED',
+ *  name: string | null,
+ *  email: string | null,
+ *  role: 'OWNER' | 'USER' | 'GUEST' | null,
+ *  workspace: number | null,
+ *  token: string | null,
+ *  updateStore: (state: Partial<AuthSlice>) => void,
+ * }} AuthSlice
+ *
+ * @typedef {import('zustand').UseBoundStore<import('zustand').StoreApi<AuthSlice>>} AuthStore
+ *
+ * @type {AuthStore}
+ */
 const useAuthStore = create((set) => ({
   status: APP_STATUS.UNKNOWN,
   name: null,

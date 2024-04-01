@@ -15,9 +15,13 @@ import { Delete } from 'monday-ui-react-core/icons';
 
 import { linksAPI } from '../../api/links';
 import { queryClient } from '../../utils/query';
+import { useAuth } from '../../providers/auth';
 
 export default function DeleteLinkModal(props) {
   const { link } = props;
+
+  const { role } = useAuth();
+
   const [show, setShow] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const openModalButtonRef = useRef(null);
@@ -58,6 +62,7 @@ export default function DeleteLinkModal(props) {
         size={Button.sizes.XS}
         kind={Button.kinds.SECONDARY}
         ref={openModalButtonRef}
+        disabled={role === 'GUEST'}
         onClick={() => setShow(true)}
       />
       <Modal
