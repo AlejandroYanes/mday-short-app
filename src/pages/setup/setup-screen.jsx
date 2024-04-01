@@ -96,7 +96,7 @@ export default function SetupScreen() {
           <br/>
           <br/>
           For instance, if you choose the name <code>acme</code>,
-          a short link would look like <code>https://mndy.link/v/acme/my-first-link</code>.
+          a short link would look like <code>https://mndy.link/acme/my-first-link</code>.
         </Text>
         <div className="setup-form">
           <TextField
