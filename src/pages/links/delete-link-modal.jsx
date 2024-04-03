@@ -7,6 +7,7 @@ import {
   ModalContent,
   ModalFooterButtons,
   ModalHeader,
+  Tooltip,
 } from 'monday-ui-react-core';
 // eslint-disable-next-line import/no-unresolved
 import { Heading } from 'monday-ui-react-core/next';
@@ -57,14 +58,16 @@ export default function DeleteLinkModal(props) {
 
   return (
     <>
-      <IconButton
-        icon={Delete}
-        size={Button.sizes.XS}
-        kind={Button.kinds.SECONDARY}
-        ref={openModalButtonRef}
-        disabled={role === 'GUEST'}
-        onClick={() => setShow(true)}
-      />
+      <Tooltip content="Remove link (permanently)" position={Tooltip.positions.LEFT} withMaxWidth>
+        <IconButton
+          icon={Delete}
+          size={Button.sizes.XS}
+          kind={Button.kinds.SECONDARY}
+          ref={openModalButtonRef}
+          disabled={role === 'GUEST'}
+          onClick={() => setShow(true)}
+        />
+      </Tooltip>
       <Modal
         alertDialog
         triggerElement={openModalButtonRef.current}

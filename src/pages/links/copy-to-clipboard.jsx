@@ -1,4 +1,4 @@
-import { Button, IconButton } from 'monday-ui-react-core';
+import { Button, IconButton, Tooltip } from 'monday-ui-react-core';
 // eslint-disable-next-line import/no-unresolved
 import { Attach } from 'monday-ui-react-core/icons';
 
@@ -22,6 +22,13 @@ export default function CopyToClipboard(props) {
   }
 
   return (
-    <IconButton icon={Attach} size={Button.sizes.XS} kind={Button.kinds.SECONDARY} onClick={copyToClipboard} />
+    <Tooltip content="Copy to clipboard" position={Tooltip.positions.LEFT} withMaxWidth>
+      <IconButton
+        icon={Attach}
+        size={Button.sizes.XS}
+        kind={Button.kinds.SECONDARY}
+        onClick={copyToClipboard}
+      />
+    </Tooltip>
   );
 }

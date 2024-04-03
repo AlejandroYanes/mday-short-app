@@ -2,7 +2,8 @@
 import { useRef, useState } from 'react';
 import {
   Button,
-  Dropdown, Flex,
+  Dropdown,
+  Flex,
   Modal,
   ModalContent,
   ModalFooterButtons,
@@ -81,7 +82,7 @@ export default function InviteUserModal() {
   return (
     <>
       <Button ref={openModalButtonRef} onClick={() => setShowModal(true)}>
-        Invite a new user
+        Invite member
       </Button>
       <Modal
         triggerElement={openModalButtonRef.current}
