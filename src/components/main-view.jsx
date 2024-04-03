@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Flex, Link, Tab, TabList } from 'monday-ui-react-core';
 // eslint-disable-next-line import/no-unresolved
-import { Email, Graph, Link as LinkIcon, Team } from 'monday-ui-react-core/icons';
+import { Email, Graph, Link as LinkIcon, Team, LearnMore } from 'monday-ui-react-core/icons';
 
 import ComingSoon from './coming-soon';
 import Links from '../pages/links';
@@ -37,7 +37,8 @@ export default function MainView() {
         <TabList activeTabId={activeTab} onTabChange={setActiveTab}>
           {tabs}
         </TabList>
-        <Flex>
+        <Flex gap={Flex.gaps.MEDIUM}>
+          <Link href="https://mndy.link/how-to-use" target="_blank" rel="noreferrer" text="How to use" icon={LearnMore} />
           <Link href="mailto:contact@mndy.link" text="Contact Us" icon={Email} />
         </Flex>
       </Flex>
