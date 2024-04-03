@@ -28,6 +28,8 @@ const schema = z.object({
     .min(1, { message: 'The email can not be empty' })
     .email({ message: 'Please use a valid email' }),
   role: z.any(),
+  // TODO: Uncomment this line to add role validation
+  // role: z.enum(['OWNER', 'USER', 'GUEST']),
 });
 
 const roleOptions = [
