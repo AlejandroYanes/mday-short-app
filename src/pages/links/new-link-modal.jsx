@@ -15,7 +15,7 @@ import InputHint from '../../components/input-hint';
 
 const schema = z.object({
   url: z.string().min(1, { message: 'The url can not be empty' }).url({ message: 'The url is invalid' }),
-  slug: z.string().regex(KEBAB_CASE_REGEX, { message: 'The short name is invalid' }),
+  slug: z.string().min(1, { message: 'The short name can not be empty' }).regex(KEBAB_CASE_REGEX, { message: 'The short name is invalid' }),
   password: z.string().optional(),
   expiresAt: z.string().optional(),
 });
@@ -23,7 +23,7 @@ const schema = z.object({
 const slugSuggestion = (
   <>
     Use words linked by {`"-"`} and do not use any other <br/>
-    special character (eg: /, %, $, etc). Preferable use 2-5 words.
+    special character (eg: /, %, $, etc). Preferably use 2-5 words.
   </>
 );
 
