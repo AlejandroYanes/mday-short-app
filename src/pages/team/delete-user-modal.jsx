@@ -55,7 +55,11 @@ export default function DeleteUserModal(props) {
 
   return (
     <>
-      <Tooltip content="Remove member (permanently)" position={Tooltip.positions.LEFT} withMaxWidth>
+      <Tooltip
+        content={disabled ? "You can't remove yourself" : 'Remove member (permanently)'}
+        position={Tooltip.positions.LEFT}
+        withMaxWidth
+      >
         <IconButton
           icon={Delete}
           size={Button.sizes.XS}
