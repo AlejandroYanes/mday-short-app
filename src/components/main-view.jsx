@@ -1,17 +1,19 @@
 import { useState } from 'react';
 import { Flex, Link, Tab, TabList } from 'monday-ui-react-core';
 // eslint-disable-next-line import/no-unresolved
-import { Email, Graph, Link as LinkIcon, Team, LearnMore } from 'monday-ui-react-core/icons';
+import { Email, Graph, Link as LinkIcon, Team, LearnMore, CreditCard } from 'monday-ui-react-core/icons';
 
-import ComingSoon from './coming-soon';
+import { useAuth } from '../providers/auth';
 import Links from '../pages/links';
 import Users from '../pages/team';
-import { useAuth } from '../providers/auth';
+import BillingPage from '../pages/billing';
+import ComingSoon from './coming-soon';
 
 const renderMap = {
   0: Links,
   1: ComingSoon,
   2: Users,
+  3: BillingPage,
 };
 
 const Empty = () => null;
@@ -29,6 +31,7 @@ export default function MainView() {
 
   if (role === 'OWNER') {
     tabs.push(<Tab key="team" icon={Team}>Team</Tab>);
+    tabs.push(<Tab key="billing" icon={CreditCard}>Billing</Tab>);
   }
 
   return (
