@@ -51,7 +51,7 @@ export default function SetupScreen() {
 
       if (response.ok) {
         const { sessionToken, role } = await response.json();
-        updateStore({ status: APP_STATUS.AUTHENTICATED, token: sessionToken, role });
+        updateStore({ status: APP_STATUS.NEEDS_BILLING, token: sessionToken, role });
       } else {
         const { status } = await response.json();
 

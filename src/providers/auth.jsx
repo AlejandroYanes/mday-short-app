@@ -33,7 +33,7 @@ const useAuthStore = create((set) => ({
 
 const useAuth = () => useAuthStore((state) => state);
 
-const resolveSessionToken = () => useAuthStore.getState().sessionToken;
+const resolveSessionToken = () => useAuthStore.getState().token;
 
 const updateAuthStatus = (status) => {
   useAuthStore.getState().updateStore({ status });
@@ -88,7 +88,16 @@ const AuthProvider = ({ children }) => {
               email,
               role,
               workspace,
-              sessionToken,
+              token: sessionToken,
+            });
+            break;
+          case 'needs-billing':
+            updateStore({
+              status: APP_STATUS.NEEDS_BILLING,
+              name,
+              email,
+              workspace,
+              token,
             });
             break;
           case 'pending':
