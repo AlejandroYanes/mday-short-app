@@ -35,25 +35,26 @@ const useAuth = () => useAuthStore((state) => state);
 
 const resolveSessionToken = () => useAuthStore.getState().token;
 
+const updateStore = (state) => {
+  useAuthStore.getState().updateStore(state);
+};
+
 const updateAuthStatus = (status) => {
   useAuthStore.getState().updateStore({ status });
 }
 
-const AuthProvider = ({ children }) => {
-  const { updateStore } = useAuth();
+export const handleInitialisation = async () => {
+  try {
+    const mondayContext = await monday.get('context');
+    const mondayToken = await monday.get('sessionToken');
 
-  const handleInitialisation = async () => {
-    try {
-      const mondayContext = await monday.get('context');
-      const mondayToken = await monday.get('sessionToken');
+    // These are meant to be able to work locally outside of Monday.com
+    let workspace = DEFAULT_WORKSPACE;
+    let name = DEFAULT_NAME;
+    let email = DEFAULT_EMAIL;
+    let token = DEFAULT_TOKEN;
 
-      // These are meant to be able to work locally outside of Monday.com
-      let workspace = DEFAULT_WORKSPACE;
-      let name = DEFAULT_NAME;
-      let email = DEFAULT_EMAIL;
-      let token = DEFAULT_TOKEN;
-
-      const query = await monday.api(`query {
+    const query = await monday.api(`query {
         me {
           is_guest
           email
@@ -62,102 +63,100 @@ const AuthProvider = ({ children }) => {
         }
       }`);
 
-      if (mondayContext.data) {
-        workspace = Number(mondayContext.data.workspaceId);
+    if (mondayContext.data) {
+      workspace = Number(mondayContext.data.workspaceId);
+    }
+
+    if (mondayToken.data) {
+      token = mondayToken.data;
+    }
+
+    if (query?.data?.me) {
+      name = query.data.me.name;
+      email = query.data.me.email;
+    }
+
+    const response = await authAPI.check({ workspace, name, email, token });
+
+    if (response.ok) {
+      const { status, sessionToken, role } = await response.json();
+
+      switch (status) {
+        case 'found':
+          updateStore({
+            status: APP_STATUS.AUTHENTICATED,
+            name,
+            email,
+            role,
+            workspace,
+            token: sessionToken,
+          });
+          break;
+        case 'needs-billing':
+          updateStore({
+            status: APP_STATUS.NEEDS_BILLING,
+            name,
+            email,
+            workspace,
+            token,
+          });
+          break;
+        case 'pending':
+          updateStore({
+            status: APP_STATUS.PENDING,
+            name,
+            email,
+            workspace,
+          });
+          break;
+        case 'invited':
+          updateStore({
+            status: APP_STATUS.INVITED,
+            name,
+            email,
+            workspace,
+          });
+          break;
+        case 'inactive':
+          updateStore({
+            status: APP_STATUS.INACTIVE,
+            name,
+            email,
+            workspace,
+          });
+          break;
+        case 'view-only':
+          updateStore({
+            status: APP_STATUS.VIEW_ONLY,
+            name,
+            email,
+            workspace,
+          });
+          break;
+        case 'not-found':
+          updateStore({
+            status: APP_STATUS.NEEDS_SETUP,
+            name,
+            email,
+            workspace,
+            sessionToken: token,
+          });
+          break;
+        default:
+          updateStore({ status: APP_STATUS.AUTH_FAILED });
+          break;
       }
-
-      if (mondayToken.data) {
-        token = mondayToken.data;
-      }
-
-      if (query?.data?.me) {
-        name = query.data.me.name;
-        email = query.data.me.email;
-      }
-
-      const response = await authAPI.check({ workspace, name, email, token });
-
-      if (response.ok) {
-        const { status, sessionToken, role } = await response.json();
-
-        switch (status) {
-          case 'found':
-            updateStore({
-              status: APP_STATUS.AUTHENTICATED,
-              name,
-              email,
-              role,
-              workspace,
-              token: sessionToken,
-            });
-            break;
-          case 'needs-billing':
-            updateStore({
-              status: APP_STATUS.NEEDS_BILLING,
-              name,
-              email,
-              workspace,
-              token,
-            });
-            break;
-          case 'pending':
-            updateStore({
-              status: APP_STATUS.PENDING,
-              name,
-              email,
-              workspace,
-            });
-            break;
-          case 'invited':
-            updateStore({
-              status: APP_STATUS.INVITED,
-              name,
-              email,
-              workspace,
-            });
-            break;
-          case 'inactive':
-            updateStore({
-              status: APP_STATUS.INACTIVE,
-              name,
-              email,
-              workspace,
-            });
-            break;
-          case 'view-only':
-            updateStore({
-              status: APP_STATUS.VIEW_ONLY,
-              name,
-              email,
-              workspace,
-            });
-            break;
-          case 'not-found':
-            updateStore({
-              status: APP_STATUS.NEEDS_SETUP,
-              name,
-              email,
-              workspace,
-              sessionToken: token,
-            });
-            break;
-          default:
-            updateStore({ status: APP_STATUS.AUTH_FAILED });
-            break;
-        }
-      } else {
-        updateStore({ status: APP_STATUS.AUTH_FAILED });
-      }
-    } catch (e) {
-      console.error(e);
+    } else {
       updateStore({ status: APP_STATUS.AUTH_FAILED });
     }
+  } catch (e) {
+    console.error(e);
+    updateStore({ status: APP_STATUS.AUTH_FAILED });
   }
+}
 
+const AuthProvider = ({ children }) => {
   useEffect(() => {
-    // Notice this method notifies the monday platform that user gains a first value in an app.
-    // Read more about it here: https://developer.monday.com/apps/docs/mondayexecute#value-created-for-user/
-    // monday.execute("valueCreatedForUser");
     handleInitialisation();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Button, Text, Toggle } from 'monday-ui-react-core';
 // eslint-disable-next-line import/no-unresolved
 import { Heading } from 'monday-ui-react-core/next';
 
 import { BILLING_CYCLE, PLANS } from '../../utils/constants';
 import { billingAPI } from '../../api/billling';
-import { useAuth } from '../../providers/auth';
+import { handleInitialisation, useAuth } from '../../providers/auth';
 import { Logo } from '../../components/logo';
 import './styles.css';
 
@@ -33,10 +34,21 @@ const Price = (props) => (
 export default function NeedsBillingScreen() {
   const { workspace, email, token } = useAuth();
 
-  const [billingCycle, setBillingCycle] = useState(BILLING_CYCLE.MONTH);
+  // TODO: should add error handling at some point
+  const { data } = useQuery({
+    queryKey: ['billing', { workspace, token }],
+    queryFn: () => billingAPI.check({ workspace, token }),
+  });
 
+  const [billingCycle, setBillingCycle] = useState(BILLING_CYCLE.MONTH);
   const [processingPlan, setProcessingPlan] = useState(null);
   const [error, setError] = useState(false);
+
+  useEffect(() => {
+    if (data && data.hasSubscription) {
+      handleInitialisation();
+    }
+  }, [data]);
 
   const handleBillingCycleChange = (selected) => {
     setBillingCycle(selected ? BILLING_CYCLE.YEAR : BILLING_CYCLE.MONTH);
@@ -63,7 +75,6 @@ export default function NeedsBillingScreen() {
     }
   };
 
-  // TODO: add the pricing cards UI here o users don't have to go to the website
   return (
     <div className="app">
       <div className="message-screen">
