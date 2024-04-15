@@ -35,3 +35,13 @@ export const APP_STATUS = {
 }
 
 export const KEBAB_CASE_REGEX = /^\w+(-\w+)*$/;
+
+export const PLANS = {
+  BASIC: 'basic',
+  PREMIUM: 'premium',
+};
+
+export const BILLING_CYCLE = {
+  MONTH: 'month',
+  YEAR: 'year',
+};
