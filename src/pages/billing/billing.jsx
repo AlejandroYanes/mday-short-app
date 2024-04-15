@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Button, Flex, Text } from 'monday-ui-react-core';
+// eslint-disable-next-line import/no-unresolved
+import { Heading } from 'monday-ui-react-core/next';
 
 import { billingAPI } from '../../api/billling';
 import './styles.css';
@@ -28,7 +30,7 @@ export default function BillingPage() {
 
   return (
     <div className="billing__card">
-      <Text type={Text.types.TEXT1} weight={Text.weights.BOLD}>Billing Information</Text>
+      <Heading type="h3" weight={Text.weights.BOLD}>Billing Information</Heading>
 
       <div className="billing__card__grid">
         <Flex direction={Flex.directions.COLUMN} align={Flex.align.START}>

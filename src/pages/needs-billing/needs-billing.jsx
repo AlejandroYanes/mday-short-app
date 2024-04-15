@@ -34,15 +34,15 @@ const Price = (props) => (
 export default function NeedsBillingScreen() {
   const { workspace, email, token } = useAuth();
 
+  const [billingCycle, setBillingCycle] = useState(BILLING_CYCLE.MONTH);
+  const [processingPlan, setProcessingPlan] = useState(null);
+  const [error, setError] = useState(false);
+
   // TODO: should add error handling at some point
   const { data } = useQuery({
     queryKey: ['billing', { workspace, token }],
     queryFn: () => billingAPI.check({ workspace, token }),
   });
-
-  const [billingCycle, setBillingCycle] = useState(BILLING_CYCLE.MONTH);
-  const [processingPlan, setProcessingPlan] = useState(null);
-  const [error, setError] = useState(false);
 
   useEffect(() => {
     if (data && data.hasSubscription) {
