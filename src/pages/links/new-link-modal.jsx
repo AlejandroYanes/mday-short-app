@@ -96,8 +96,8 @@ export default function NewLinkModal() {
       >
         <ModalHeader
           title={
-            <Heading type={Heading.types.H3}>
-            Add a new link
+            <Heading type={Heading.types.H3} element="span">
+              Add a new link
             </Heading>
           }
         />

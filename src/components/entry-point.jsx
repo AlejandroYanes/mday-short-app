@@ -1,4 +1,3 @@
-import { Text } from 'monday-ui-react-core';
 // eslint-disable-next-line import/no-unresolved
 import { Heading } from 'monday-ui-react-core/next';
 
@@ -12,6 +11,7 @@ import ViewOnlyScreen from '../pages/view-only';
 import NeedsBillingScreen from '../pages/needs-billing';
 import MainView from './main-view';
 import { Logo } from './logo';
+import ErrorScreen from './error-screen';
 
 export default function EntryPoint() {
   const { status } = useAuth();
@@ -41,18 +41,6 @@ export default function EntryPoint() {
     case APP_STATUS.AUTHENTICATED:
       return <MainView/>;
     default:
-      return (
-        <div className="app">
-          <div className="message-screen">
-            <Logo width={120} height={120} />
-            <Heading align={Heading.align.CENTER}>Error</Heading>
-            <Text type={Text.types.TEXT1} align={Text.align.CENTER}>
-              An error occurred while trying to authenticate you.
-              <br/>
-              Please try again later.
-            </Text>
-          </div>
-        </div>
-      );
+      return <ErrorScreen />;
   }
 }

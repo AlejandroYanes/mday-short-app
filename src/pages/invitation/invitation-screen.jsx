@@ -22,7 +22,7 @@ export default function InvitationScreen() {
 
       if (response.ok) {
         const { role, sessionToken } = await response.json();
-        updateStore({ status: APP_STATUS.AUTHENTICATED, role, sessionToken });
+        updateStore({ status: APP_STATUS.AUTHENTICATED, role, token: sessionToken });
       } else {
         throw new Error('failed to accept invitation');
       }

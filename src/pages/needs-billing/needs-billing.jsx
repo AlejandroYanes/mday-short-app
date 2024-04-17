@@ -25,7 +25,7 @@ const Header = ({ highlight, children }) => (
 const Price = (props) => (
   <Text type={Text.types.TEXT1} element="p" data-active={props.highlight} className="billing_cards__price">
     <span className="billing_cards__price__value">
-      £{props.value}
+      ${props.value}
     </span>
     <span>/{props.cycle}</span>
   </Text>

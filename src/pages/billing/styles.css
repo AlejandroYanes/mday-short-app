@@ -1,3 +1,11 @@
+.billing__page {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  width: 900px;
+  gap: 2rem;
+}
+
 .billing__card {
   display: flex;
   flex-direction: column;

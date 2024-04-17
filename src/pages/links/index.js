@@ -1,1 +1,1 @@
-export { default } from './links-list';
+export { default } from './links-table';

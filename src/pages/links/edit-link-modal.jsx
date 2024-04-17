@@ -134,7 +134,7 @@ export default function EditLinkModal(props) {
       >
         <ModalHeader
           title={
-            <Heading type={Heading.types.H3}>
+            <Heading type={Heading.types.H3} element="span">
             Update Link
             </Heading>
           }

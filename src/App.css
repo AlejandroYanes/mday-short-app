@@ -69,8 +69,18 @@ code {
   border: none;
 }
 
+.page {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  gap: 2rem;
+}
+
+.page--large {
+  width: 80%;
+}
+
 .table-container {
-  width: fit-content;
   max-width: 100%
 }
 
@@ -87,6 +97,13 @@ code {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.table-cell--right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
 }
 
 .link-cell__label {

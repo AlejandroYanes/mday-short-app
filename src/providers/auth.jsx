@@ -56,7 +56,6 @@ export const handleInitialisation = async () => {
 
     const query = await monday.api(`query {
         me {
-          is_guest
           email
           name
           id
@@ -79,7 +78,7 @@ export const handleInitialisation = async () => {
     const response = await authAPI.check({ workspace, name, email, token });
 
     if (response.ok) {
-      const { status, sessionToken, role } = await response.json();
+      const { status, token: sessionToken, role } = await response.json();
 
       switch (status) {
         case 'found':
@@ -139,7 +138,7 @@ export const handleInitialisation = async () => {
             name,
             email,
             workspace,
-            sessionToken: token,
+            token,
           });
           break;
         default:

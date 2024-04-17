@@ -32,4 +32,20 @@ export const billingAPI = {
       'Authorization': `Bearer ${resolveSessionToken()}`,
     },
   }).then(handle401),
+
+  getDetails: () => fetch(`${API_URL}/billing/info`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${resolveSessionToken()}`,
+    },
+  }).then(handle401).then((response) => response.json()),
+
+  listInvoices: () => fetch(`${API_URL}/billing/invoices`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${resolveSessionToken()}`,
+    },
+  }).then(handle401).then((response) => response.json()),
 };

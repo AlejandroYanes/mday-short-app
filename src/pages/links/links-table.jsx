@@ -28,7 +28,7 @@ const columns = [
     id: 'baseLink',
     loadingStateType: 'medium-text',
     title: 'Link',
-    width: 440,
+    // width: 440,
   },
   {
     id: 'slug',
@@ -56,14 +56,14 @@ const columns = [
   },
 ];
 
-export default function LinksList() {
+export default function LinksTable() {
   const { role } = useAuth();
 
   const { data } = useQuery({ queryKey: ['links'], queryFn: linksAPI.list });
   const results = data?.results || [];
 
   return (
-    <>
+    <div className="page page--large">
       <div style={{ height: 40 }}>
         <RenderIf condition={role !== 'GUEST'}>
           <NewLinkModal />
@@ -105,6 +105,6 @@ export default function LinksList() {
           </TableBody>
         </Table>
       </div>
-    </>
+    </div>
   );
 }

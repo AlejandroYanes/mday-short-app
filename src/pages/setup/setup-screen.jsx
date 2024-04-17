@@ -15,7 +15,7 @@ const slugValidator = z.object({
 });
 
 export default function SetupScreen() {
-  const { user, name: userName, email, workspace, sessionToken, updateStore } = useAuth();
+  const { user, name: userName, email, workspace, token, updateStore } = useAuth();
 
   const [name, setName] = useState('');
   const [wslug, setWslug] = useState('');
@@ -46,12 +46,11 @@ export default function SetupScreen() {
       const response = await authAPI.setup({
         user: { id: user, name: userName, email },
         workspace: { id: workspace, ...parse.data },
-        token: sessionToken,
+        token,
       });
 
       if (response.ok) {
-        const { sessionToken, role } = await response.json();
-        updateStore({ status: APP_STATUS.NEEDS_BILLING, token: sessionToken, role });
+        updateStore({ status: APP_STATUS.NEEDS_BILLING });
       } else {
         const { status } = await response.json();
 
