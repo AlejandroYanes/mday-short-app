@@ -6,6 +6,12 @@
   gap: 2rem;
 }
 
+.billing__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
 .billing__card {
   display: flex;
   flex-direction: column;

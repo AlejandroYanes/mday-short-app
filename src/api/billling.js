@@ -25,7 +25,15 @@ export const billingAPI = {
     body: JSON.stringify({ workspace, email, plan, cycle, token }),
   }),
 
-  getCustomerPortal: () => fetch(`${API_URL}/billing/portal`, {
+  getLinkToUpdateSubscription: () => fetch(`${API_URL}/billing/update/subscription`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${resolveSessionToken()}`,
+    },
+  }).then(handle401),
+
+  getLinkToUpdatePaymentMethod: () => fetch(`${API_URL}/billing/update/payment-method`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
