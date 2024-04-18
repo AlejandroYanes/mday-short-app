@@ -54,6 +54,17 @@ const columns = [
   },
 ];
 
+const resolveColor = (status) => {
+  switch (status) {
+    case 'paid':
+      return Label.colors.POSITIVE;
+    case 'failed':
+      return Label.colors.NEGATIVE;
+    default:
+      return Label.colors.DARK;
+  }
+}
+
 export default function InvoicesTable() {
   const { data: results = [] } = useQuery({
     queryKey: ['billing', 'invoices'],
@@ -81,7 +92,7 @@ export default function InvoicesTable() {
                 </Text>
               </TableCell>
               <TableCell className="capitalize table-cell--center">
-                <Label text={invoice.status} kind={Label.kinds.LINE} color={Label.colors.NEGATIVE} />
+                <Label text={invoice.status} kind={Label.kinds.LINE} color={resolveColor(invoice.status)} />
               </TableCell>
               <TableCell className="table-cell--right">
                 <Text type={Text.types.TEXT1} element="p">
