@@ -117,8 +117,8 @@ export default function NeedsBillingScreen() {
               <Text type={Text.types.TEXT1} className="billing_cards__features__container">
                 <ul className="billing_cards__features">
                   <li>Sames as the Base Plan.</li>
-                  <li>Use custom domains.</li>
-                  <li>Generate QR codes to share.</li>
+                  <li>Use custom domains (coming soon).</li>
+                  <li>Generate QR codes to share (coming soon).</li>
                 </ul>
               </Text>
               <Text type={Text.types.TEXT1} element="p">
