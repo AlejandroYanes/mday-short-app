@@ -69,8 +69,7 @@ export default function InvoicesTable() {
   const { data: results = [] } = useQuery({
     queryKey: ['billing', 'invoices'],
     queryFn: billingAPI.listInvoices,
-    // refetchOnWindowFocus: false,
-    // refetchInterval: 1000 * 60 * 60,
+    refetchInterval: 1000 * 60 * 60,
   });
 
   return (

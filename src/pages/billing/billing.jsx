@@ -17,7 +17,6 @@ export default function BillingPage() {
   const { data: billingInfo, isLoading, isError } = useQuery({
     queryKey: ['billing'],
     queryFn: billingAPI.getDetails,
-    refetchOnWindowFocus: false,
     refetchInterval: 1000 * 60 * 60,
   });
 
