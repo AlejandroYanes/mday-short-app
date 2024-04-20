@@ -1,0 +1,66 @@
+.domain_card {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  border-radius: var(--border-radius-medium);
+  border: 1px solid var(--ui-border-color);
+}
+
+.domain_card__link, .domain_card__link * {
+  color: var(--color-basic_blue);
+}
+
+.domain_card__divider {
+  width: 100%;
+  border-top: 1px solid var(--ui-border-color);
+  margin-top: 20px;
+  margin-bottom: 32px;
+}
+
+.domain_card__config {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.domain_card__loading_circle {
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  background-color: var(--ui-background-color);
+}
+
+.domain_card__tab-button {
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  padding-bottom: 4px;
+  width: fit-content;
+  background: transparent;
+  border: unset;
+  border-bottom: 2px solid var(--fixed-dark-color);
+}
+
+.domain_card__tab-button--inactive {
+  color: var(--secondary-text-color);
+  border-bottom: 2px solid transparent;
+}
+
+.domain_card__block {
+  display: flex;
+  justify-content: start;
+  align-items: start;
+  gap: 16px;
+  padding: 8px 16px;
+  background: var(--color-riverstone_gray);
+}
+
+.domain_card__block p:first-child {
+  font-weight: 700;
+}
+
+.domain_card__block p:last-child {
+  font-size: 14px;
+  font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+}

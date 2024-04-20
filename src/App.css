@@ -76,6 +76,10 @@ code {
   gap: 2rem;
 }
 
+.page--small {
+  width: 900px;
+}
+
 .page--large {
   width: 100%;
 }
