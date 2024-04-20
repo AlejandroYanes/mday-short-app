@@ -1,17 +1,35 @@
 import { Button, Flex, Text } from 'monday-ui-react-core';
 // eslint-disable-next-line import/no-unresolved
 import { ExternalPage } from 'monday-ui-react-core/icons';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { domainsApi } from '../../api/domains';
+import { monday } from '../../utils/monday';
+import { queryClient } from '../../utils/query';
 import ConfigSection from './config-section';
 
 export default function DomainCard({ domain }) {
   const { data: domainInfo, isLoading, isFetching, refetch } = useQuery({
-    queryKey: ['domains', domain],
+    queryKey: ['domain', domain],
     queryFn: () => domainsApi.check(domain),
-
   });
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: () => domainsApi.remove(domain),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['domains'],
+      });
+    },
+    onError: (error) => {
+      monday.execute('notice', {
+        message: error,
+        type: 'error',
+        timeout: 2000,
+      });
+    }
+  });
+
   return (
     <div className="domain_card">
       <Flex align={Flex.align.CENTER} justify={Flex.justify.SPACE_BETWEEN}>
@@ -31,9 +49,9 @@ export default function DomainCard({ domain }) {
         <Flex gap={Flex.gaps.SMALL}>
           <Button
             kind={Button.kinds.SECONDARY}
-            onClick={() => refetch()}
             loading={!isLoading && isFetching}
-            disabled={isLoading}
+            disabled={isLoading || isPending}
+            onClick={() => refetch()}
           >
             Refresh
           </Button>
@@ -41,6 +59,8 @@ export default function DomainCard({ domain }) {
             kind={Button.kinds.SECONDARY}
             color={Button.colors.NEGATIVE}
             disabled={isFetching}
+            loading={isPending}
+            onClick={() => mutate()}
           >
             Remove
           </Button>

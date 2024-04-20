@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { Button, Flex, TextField } from 'monday-ui-react-core';
 // eslint-disable-next-line import/no-unresolved
 import { Heading } from 'monday-ui-react-core/next';
@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
 import { DOMAIN_NAME_REGEX } from '../../utils/constants';
+import { monday } from '../../utils/monday';
 import { domainsApi } from '../../api/domains';
 import InputHint from '../../components/input-hint';
 import DomainCard from './domain-card';
@@ -19,7 +20,7 @@ const schema = z.object({
 });
 
 export default function DomainsPage() {
-  const { data: domains = [] } = useQuery({
+  const { data: domains = [], refetch } = useQuery({
     queryKey: ['domains'],
     queryFn: domainsApi.list,
   });
@@ -31,15 +32,28 @@ export default function DomainsPage() {
     resolver: zodResolver(schema),
   });
 
+  const { mutate, isPending } = useMutation({
+    mutationFn: (values) => domainsApi.add(values.domain),
+    onSuccess: (values) => {
+      form.reset();
+      refetch();
+    },
+    onError: (error) => {
+      monday.execute('notice', {
+        message: error,
+        type: 'error',
+        timeout: 2000,
+      });
+    }
+  });
+
   return (
     <div className="page page--small">
       <Heading>Domains</Heading>
       <form
-        onSubmit={form.handleSubmit((values) => {
-          console.log('valid', values);
-        })}
+        onSubmit={form.handleSubmit(mutate)}
       >
-        <Flex style={{ width: '380px' }} gap={Flex.gaps.MEDIUM}>
+        <Flex style={{ width: '380px' }} align={Flex.align.START} gap={Flex.gaps.MEDIUM}>
           <Controller
             name="domain"
             control={form.control}
@@ -57,7 +71,7 @@ export default function DomainsPage() {
               />
             )}
           />
-          <Button style={{ padding: '8px 20px' }}>Add</Button>
+          <Button type={Button.types.SUBMIT} loading={isPending} style={{ padding: '8px 20px' }}>Add</Button>
         </Flex>
       </form>
       {domains.map((domain) => (
