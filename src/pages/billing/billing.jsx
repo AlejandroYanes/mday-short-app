@@ -46,35 +46,41 @@ export default function BillingPage() {
   if (isLoading) {
     return (
       <div className="billing__page">
-        <div className="billing__card">
-          <Heading type="h3" weight={Text.weights.BOLD}>Billing Information</Heading>
+        <div className="billing__grid">
+          <div className="billing__card">
+            <Flex direction="row" align={Flex.align.CENTER} justify={Flex.justify.START}>
+              <Heading type="h3" weight={Text.weights.BOLD}>Current Plan</Heading>
+            </Flex>
 
-          <div className="billing__card__grid">
             <Flex direction={Flex.directions.COLUMN} align={Flex.align.START}>
               <Text type={Text.types.TEXT2}>Current Plan</Text>
-              <Flex justify={Flex.justify.START} gap={Flex.gaps.SMALL}>
-                <Skeleton width="220px" height="16px"/>
-              </Flex>
+              <Skeleton width="220px" height="16px"/>
             </Flex>
 
-            <Flex direction={Flex.directions.COLUMN} align={Flex.align.START} gap={Flex.gaps.XS}>
+            <Flex direction={Flex.directions.COLUMN} align={Flex.align.START}>
               <Text type={Text.types.TEXT2}>Next billing date</Text>
-              <Skeleton width="150px" height="16px"/>
-            </Flex>
-
-            <Flex direction={Flex.directions.COLUMN} align={Flex.align.START} gap={Flex.gaps.XS}>
-              <Text type={Text.types.TEXT2}>Card Information</Text>
-              <Skeleton width="150px" height="16px"/>
-            </Flex>
-
-            <Flex direction={Flex.directions.COLUMN} align={Flex.align.START} gap={Flex.gaps.XS}>
-              <Text type={Text.types.TEXT2}>Billed to</Text>
-              <Skeleton width="150px" height="16px"/>
+              <Skeleton width="220px" height="16px"/>
             </Flex>
           </div>
 
-          <div style={{height: 40}}/>
+          <div className="billing__card">
+            <Flex direction="row" align={Flex.align.CENTER} justify={Flex.justify.START}>
+              <Heading type="h3" weight={Text.weights.BOLD}>Billing Information</Heading>
+            </Flex>
+
+            <Flex direction={Flex.directions.COLUMN} align={Flex.align.START}>
+              <Text type={Text.types.TEXT2}>Card Information</Text>
+              <Skeleton width="220px" height="16px"/>
+            </Flex>
+
+            <Flex direction={Flex.directions.COLUMN} align={Flex.align.START}>
+              <Text type={Text.types.TEXT2}>Billed to</Text>
+              <Skeleton width="220px" height="16px"/>
+            </Flex>
+          </div>
         </div>
+
+        <InvoicesTable/>
       </div>
     );
   }
