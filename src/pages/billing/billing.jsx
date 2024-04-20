@@ -87,7 +87,7 @@ export default function BillingPage() {
 
   if (isError || !billingInfo) {
     return (
-      <ErrorScreen title="Oops...">
+      <ErrorScreen title="Oops..." centered={false}>
         <Text type={Text.types.TEXT1} align={Text.align.CENTER}>
           An error occurred while trying to get the billing information.
           <br/>

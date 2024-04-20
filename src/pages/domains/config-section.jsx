@@ -33,7 +33,7 @@ export default function ConfigSection({ domain, domainInfo }) {
     );
   }
 
-  if (!domainInfo.verified) {
+  if (!domainInfo.verified && domainInfo?.verification) {
     const txtVerification = domainInfo.verification.find(
       (x) => x.type === 'TXT'
     )

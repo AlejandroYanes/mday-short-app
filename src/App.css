@@ -135,6 +135,11 @@ code {
   margin: auto;
 }
 
+.message-screen--not-centered {
+  margin-top: 48px;
+  justify-content: flex-start;
+}
+
 .setup-screen {
   display: flex;
   flex-direction: column;

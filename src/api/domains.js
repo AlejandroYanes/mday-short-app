@@ -9,7 +9,13 @@ export const domainsApi = {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${resolveSessionToken()}`,
     },
-  }).then(handle401).then((res) => res.json()),
+  }).then(handle401).then((res) => {
+    if (res.ok) {
+      return res.json();
+    }
+
+    throw new Error('Failed to load domains.');
+  }),
 
   check: (domain) => fetch(`${API_URL}/domains/check`, {
     method: 'POST',
@@ -18,7 +24,19 @@ export const domainsApi = {
       'Authorization': `Bearer ${resolveSessionToken()}`,
     },
     body: JSON.stringify({ domain }),
-  }).then(handle401).then((res) => res.json()),
+  }).then(handle401).then((res) => {
+    if (res.ok) {
+      return res.json();
+    }
+
+    switch (res.status) {
+      case 404:
+        throw new Error('Domain not found');
+      default:
+        throw new Error('Failed to check domain.');
+    }
+
+  }),
 
   add: (domain) => fetch(`${API_URL}/domains/add`, {
     method: 'POST',

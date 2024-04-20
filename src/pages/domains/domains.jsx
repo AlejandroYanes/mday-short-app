@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { Button, Flex, TextField } from 'monday-ui-react-core';
+import { Button, Flex, Text, TextField } from 'monday-ui-react-core';
 // eslint-disable-next-line import/no-unresolved
 import { Heading } from 'monday-ui-react-core/next';
 import { Controller, useForm } from 'react-hook-form';
@@ -10,7 +10,9 @@ import { DOMAIN_NAME_REGEX } from '../../utils/constants';
 import { monday } from '../../utils/monday';
 import { domainsApi } from '../../api/domains';
 import InputHint from '../../components/input-hint';
+import ErrorScreen from '../../components/error-screen';
 import DomainCard from './domain-card';
+import SkeletonCard from './skeleton-card';
 import './styles.css';
 
 const schema = z.object({
@@ -20,7 +22,7 @@ const schema = z.object({
 });
 
 export default function DomainsPage() {
-  const { data: domains = [], refetch } = useQuery({
+  const { data: domains = [], refetch, isLoading, isError } = useQuery({
     queryKey: ['domains'],
     queryFn: domainsApi.list,
   });
@@ -47,9 +49,36 @@ export default function DomainsPage() {
     }
   });
 
+  if (isError) {
+    return (
+      <ErrorScreen title="Failed to load domains" centered={false}>
+        <Text type={Text.types.TEXT1} align={Text.align.CENTER}>
+          An error occurred while trying to fetch your domains.
+          <br/>
+          Please try again later. If the issue persists, contact support at{' '}
+          <a
+            href="mailto:contact@mndy.link"
+            style={{color: 'var(--negative-color)', font: 'var(--font-text2-normal)'}}
+          >
+            contact@mndy.link
+          </a>
+        </Text>
+      </ErrorScreen>
+    );
+  }
+
   return (
     <div className="page page--small">
-      <Heading>Domains</Heading>
+      <div>
+        <Heading>Domains</Heading>
+        <Text type={Text.types.TEXT1} element="p">
+          Add domains to create branded short links, these will be used when creating new links.
+          <br />
+          This way, you can create short links that match your brand.
+          <br />
+          Also, your links will not have the Workspace name in them, making them even shorter.
+        </Text>
+      </div>
       <form
         onSubmit={form.handleSubmit(mutate)}
       >
@@ -74,6 +103,13 @@ export default function DomainsPage() {
           <Button type={Button.types.SUBMIT} loading={isPending} style={{ padding: '8px 20px' }}>Add</Button>
         </Flex>
       </form>
+      {isLoading ? (
+        <>
+          <SkeletonCard/>
+          <SkeletonCard/>
+          <SkeletonCard/>
+        </>
+      ) : null}
       {domains.map((domain) => (
         <DomainCard domain={domain.name} key={domain.name}/>
       ))}
