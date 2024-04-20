@@ -109,7 +109,11 @@ export default function BillingPage() {
         <div className="billing__card">
           <Flex direction="row" align={Flex.align.CENTER} justify={Flex.justify.SPACE_BETWEEN}>
             <Heading type="h3" weight={Text.weights.BOLD}>Current Plan</Heading>
-            <Button kind={Button.kinds.SECONDARY} loading={isFetchingSubsLink} onClick={() => updateSubscription()}>
+            <Button
+              kind={Button.kinds.SECONDARY}
+              loading={isFetchingSubsLink}
+              onClick={() => updateSubscription()}
+            >
               Update
             </Button>
           </Flex>
@@ -148,7 +152,11 @@ export default function BillingPage() {
         <div className="billing__card">
           <Flex direction="row" align={Flex.align.CENTER} justify={Flex.justify.SPACE_BETWEEN}>
             <Heading type="h3" weight={Text.weights.BOLD}>Billing Information</Heading>
-            <Button kind={Button.kinds.SECONDARY} loading={isFetchingPaymentLink} onClick={() => updatePaymentMethod()}>
+            <Button
+              kind={Button.kinds.SECONDARY}
+              loading={isFetchingPaymentLink}
+              onClick={() => updatePaymentMethod()}
+            >
               Update
             </Button>
           </Flex>
