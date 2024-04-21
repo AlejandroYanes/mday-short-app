@@ -1,5 +1,5 @@
 /* eslint-disable react/no-children-prop */
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Button, Dropdown, Flex,
   IconButton,
@@ -47,14 +47,10 @@ const expiresAtSuggestion = 'Set an expiration date for the link, after this dat
 const domainSuggestion = 'Select a domain to use for the link. Using a domain will remove the workspace short name from the link.';
 const noDomainSuggestion = 'Add new custom domains to use them here.';
 
-export default function EditLinkModal(props) {
-  const { link } = props;
+function EditLinkModal(props) {
+  const { link, onClose } = props;
 
-  const { role } = useAuth();
-
-  const [showModal, setShowModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
-  const openModalButtonRef = useRef(null);
 
   const { data: domains = [], isLoading } = useQuery({
     queryKey: ['domains'],
@@ -77,11 +73,6 @@ export default function EditLinkModal(props) {
     setTimeout(() => setErrorMessage(false), 5000);
   }
 
-  const handleClose = () => {
-    setShowModal(false);
-    form.reset();
-  }
-
   const handleSubmit = async () => {
     const values = form.getValues();
     try {
@@ -95,7 +86,7 @@ export default function EditLinkModal(props) {
 
       if (response.ok) {
         await queryClient.invalidateQueries({ queryKey: ['links'] });
-        setShowModal(false);
+        onClose();
         form.reset();
       } else {
         if (response.field === 'slug') {
@@ -107,7 +98,6 @@ export default function EditLinkModal(props) {
         }
       }
     } catch (error) {
-      console.error(error);
       showError();
     }
   }
@@ -120,7 +110,9 @@ export default function EditLinkModal(props) {
 
   useEffect(() => {
     if (filteredDomains.length > 0) {
+      console.log('domains', filteredDomains);
       const connectedDomain = filteredDomains.find((domain) => domain.label === link.domain);
+      console.log('connectedDomain', connectedDomain);
       if (connectedDomain) {
         form.setValue('domain', connectedDomain);
       }
@@ -135,21 +127,17 @@ export default function EditLinkModal(props) {
           icon={Edit}
           size={Button.sizes.XS}
           kind={Button.kinds.SECONDARY}
-          ref={openModalButtonRef}
-          disabled={role === 'GUEST'}
-          onClick={() => setShowModal(true)}
         />
       </Tooltip>
       <Modal
-        triggerElement={openModalButtonRef.current}
-        show={showModal}
-        onClose={handleClose}
+        show
+        onClose={onClose}
         closeButtonAriaLabel="close"
       >
         <ModalHeader
           title={
             <Heading type={Heading.types.H3} element="span">
-            Update Link
+              Update Link
             </Heading>
           }
         />
@@ -212,6 +200,7 @@ export default function EditLinkModal(props) {
                   <TextField
                     title="Expires On"
                     type={TextField.types.DATE}
+                    minDate={new Date()}
                     validation={{
                       text: <InputHint text={expiresAtSuggestion} />,
                     }}
@@ -252,9 +241,29 @@ export default function EditLinkModal(props) {
           primaryButtonText="Confirm"
           secondaryButtonText="Cancel"
           onPrimaryButtonClick={form.handleSubmit(handleSubmit)}
-          onSecondaryButtonClick={handleClose}
+          onSecondaryButtonClick={onClose}
         />
       </Modal>
     </>
+  );
+}
+
+export default function EditLinkModalWrapper(props) {
+  const [showModal, setShowModal] = useState(false);
+
+  const { role } = useAuth();
+
+  if (showModal) {
+    return <EditLinkModal {...props} onClose={() => setShowModal(false)} />;
+  }
+
+  return (
+    <IconButton
+      icon={Edit}
+      size={Button.sizes.XS}
+      kind={Button.kinds.SECONDARY}
+      disabled={role === 'GUEST'}
+      onClick={() => setShowModal(true)}
+    />
   );
 }
