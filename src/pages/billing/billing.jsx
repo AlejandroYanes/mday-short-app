@@ -8,8 +8,11 @@ import { billingAPI } from '../../api/billling';
 import ErrorScreen from '../../components/error-screen';
 import './styles.css';
 import InvoicesTable from './invoices-table';
+import { useAuth } from '../../providers/auth';
 
 export default function BillingPage() {
+  const { isPremium } = useAuth();
+
   const { data: billingInfo, isLoading, isError } = useQuery({
     queryKey: ['billing'],
     queryFn: billingAPI.getDetails,
@@ -121,8 +124,8 @@ export default function BillingPage() {
           <Flex direction={Flex.directions.COLUMN} align={Flex.align.START}>
             <Text type={Text.types.TEXT2}>Current Plan</Text>
             <Flex justify={Flex.justify.START} gap={Flex.gaps.SMALL}>
-              <Text type={Text.types.TEXT1}>Basic Plan</Text>
-              <Text type={Text.types.TEXT1}>${billingInfo.price / 100} /month</Text>
+              <Text type={Text.types.TEXT1}>{billingInfo.plan}</Text>
+              <Text type={Text.types.TEXT1}>${billingInfo.price / 100} /{billingInfo.cycle}</Text>
             </Flex>
           </Flex>
 

@@ -10,7 +10,9 @@ import BillingPage from '../pages/billing';
 import DomainsPage from '../pages/domains';
 import ComingSoon from './coming-soon';
 
-const renderMap = {
+const Empty = () => null;
+
+const premiumTabs = {
   0: Links,
   1: ComingSoon,
   2: Users,
@@ -18,11 +20,18 @@ const renderMap = {
   4: BillingPage,
 };
 
-const Empty = () => null;
+const basicTabs = {
+  0: Links,
+  1: ComingSoon,
+  2: Users,
+  3: BillingPage,
+}
 
 export default function MainView() {
-  const { role } = useAuth();
+  const { role, isPremium } = useAuth();
   const [activeTab, setActiveTab] = useState(0);
+
+  const renderMap = isPremium ? premiumTabs : basicTabs;
 
   const Content = renderMap[activeTab] ?? Empty;
 
@@ -33,7 +42,11 @@ export default function MainView() {
 
   if (role === 'OWNER') {
     tabs.push(<Tab key="team" icon={Team}>Team</Tab>);
-    tabs.push(<Tab key="domains" icon={Globe}>Domains</Tab>);
+
+    if (isPremium) {
+      tabs.push(<Tab key="domains" icon={Globe}>Domains</Tab>);
+    }
+
     tabs.push(<Tab key="billing" icon={CreditCard}>Billing</Tab>);
   }
 
