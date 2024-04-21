@@ -95,8 +95,8 @@ export default function NeedsBillingScreen() {
               <Price value={billingCycle === 'month' ? 8 : 80} cycle={billingCycle}/>
               <Text type={Text.types.TEXT1} className="billing_cards__features__container">
                 <ul className="billing_cards__features">
-                  <li>Create as many links as you want to.</li>
-                  <li>Access to Analytics</li>
+                  <li>Create as many links as you want to</li>
+                  <li>Access to Analytics (coming soon)</li>
                 </ul>
               </Text>
               <Button
@@ -116,9 +116,9 @@ export default function NeedsBillingScreen() {
               <Price value={billingCycle === 'month' ? 12 : 120} cycle={billingCycle} highlight/>
               <Text type={Text.types.TEXT1} className="billing_cards__features__container">
                 <ul className="billing_cards__features">
-                  <li>Sames as the Base Plan.</li>
-                  <li>Use custom domains (coming soon).</li>
-                  <li>Generate QR codes to share (coming soon).</li>
+                  <li>Sames as the Base Plan</li>
+                  <li>Use custom domains (coming soon)</li>
+                  <li>Generate QR codes to share (coming soon)</li>
                 </ul>
               </Text>
               <Text type={Text.types.TEXT1} element="p">
