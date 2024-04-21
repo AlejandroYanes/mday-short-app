@@ -52,7 +52,7 @@ export const domainsApi = {
 
     switch (res.status) {
       case 409:
-        throw new Error('Domain already exists');
+        throw new Error('The domain is already in use');
       default:
         throw new Error('Failed to add domain.');
     }

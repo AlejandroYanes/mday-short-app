@@ -41,8 +41,9 @@ export default function DomainsPage() {
       refetch();
     },
     onError: (error) => {
+      console.log(error);
       monday.execute('notice', {
-        message: error,
+        message: error.message,
         type: 'error',
         timeout: 2000,
       });
