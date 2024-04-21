@@ -111,9 +111,7 @@ function EditLinkModal(props) {
 
   useEffect(() => {
     if (filteredDomains.length > 0) {
-      console.log('domains', filteredDomains);
       const connectedDomain = filteredDomains.find((domain) => domain.label === link.domain);
-      console.log('connectedDomain', connectedDomain);
       if (connectedDomain) {
         form.setValue('domain', connectedDomain);
       }
