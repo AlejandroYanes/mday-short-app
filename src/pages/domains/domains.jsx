@@ -25,6 +25,7 @@ export default function DomainsPage() {
   const { data: domains = [], refetch, isLoading, isError } = useQuery({
     queryKey: ['domains'],
     queryFn: domainsApi.list,
+    refetchInterval: 60000 * 2, // 2 minutes
   });
 
   const form = useForm({
@@ -36,7 +37,7 @@ export default function DomainsPage() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: (values) => domainsApi.add(values.domain),
-    onSuccess: (values) => {
+    onSuccess: () => {
       form.reset();
       refetch();
     },

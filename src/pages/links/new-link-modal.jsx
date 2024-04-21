@@ -51,6 +51,7 @@ export default function NewLinkModal() {
   const { data: domains = [], isLoading } = useQuery({
     queryKey: ['domains'],
     queryFn: domainsApi.list,
+    refetchInterval: 60000 * 2, // 2 minutes
   });
 
   const form = useForm({

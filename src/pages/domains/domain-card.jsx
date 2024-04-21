@@ -12,7 +12,7 @@ export default function DomainCard({ domain }) {
   const { data: domainInfo, isLoading, isFetching, refetch } = useQuery({
     queryKey: ['domain', domain],
     queryFn: () => domainsApi.check(domain),
-    refetchInterval: 1000 * 60 * 2, // reload every 2 minutes
+    refetchInterval: 60000 * 2, // 2 minutes
   });
 
   const { mutate, isPending } = useMutation({
