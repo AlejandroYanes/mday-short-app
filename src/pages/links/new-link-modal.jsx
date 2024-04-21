@@ -1,13 +1,23 @@
 /* eslint-disable react/no-children-prop,max-len */
-import { useRef, useState } from 'react';
-import { Button, Modal, ModalContent, ModalFooterButtons, ModalHeader, TextField } from 'monday-ui-react-core';
+import { useMemo, useRef, useState } from 'react';
+import {
+  Button,
+  Dropdown, Flex,
+  Modal,
+  ModalContent,
+  ModalFooterButtons,
+  ModalHeader, Text,
+  TextField
+} from 'monday-ui-react-core';
 // eslint-disable-next-line import/no-unresolved
 import { Heading } from 'monday-ui-react-core/next';
+import { useQuery } from '@tanstack/react-query';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
 import { linksAPI } from '../../api/links';
+import { domainsApi } from '../../api/domains';
 import { queryClient } from '../../utils/query';
 import { KEBAB_CASE_REGEX } from '../../utils/constants';
 import { monday } from '../../utils/monday';
@@ -18,6 +28,7 @@ const schema = z.object({
   slug: z.string().min(1, { message: 'The short name can not be empty' }).regex(KEBAB_CASE_REGEX, { message: 'The short name is invalid' }),
   password: z.string().nullish(),
   expiresAt: z.string().nullish(),
+  domain: z.any().nullish(),
 });
 
 const slugSuggestion = (
@@ -28,13 +39,19 @@ const slugSuggestion = (
 );
 
 const passwordSuggestion = 'In case you want to restrict who can access the link.';
-
 const expiresAtSuggestion = 'Set an expiration date for the link, after this date the link will be disabled.';
+const domainSuggestion = 'Select a domain to use for the link. Using a domain will remove the workspace short name from the link.';
+const noDomainSuggestion = 'Add new custom domains to use them here.';
 
 export default function NewLinkModal() {
   const [showModal, setShowModal] = useState(false);
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const openModalButtonRef = useRef(null);
+
+  const { data: domains = [], isLoading } = useQuery({
+    queryKey: ['domains'],
+    queryFn: domainsApi.list,
+  });
 
   const form = useForm({
     values: {
@@ -42,6 +59,7 @@ export default function NewLinkModal() {
       slug: '',
       password: '',
       expiresAt: '',
+      domain: null,
     },
     resolver: zodResolver(schema),
   });
@@ -57,12 +75,14 @@ export default function NewLinkModal() {
   }
 
   const handleSubmit = async () => {
-    const payload = form.getValues();
+    const values = form.getValues();
+
     try {
       const response = await linksAPI.create({
-        ...payload,
-        password: payload.password || null,
-        expiresAt: payload.expiresAt || null,
+        ...values,
+        password: values.password || null,
+        expiresAt: values.expiresAt || null,
+        domain: values.domain ? values.domain.label : null,
       });
 
       if (response.ok) {
@@ -82,6 +102,12 @@ export default function NewLinkModal() {
       showError();
     }
   }
+
+  const filteredDomains = useMemo(() => (
+    domains
+      .filter((domain) => domain.verified && domain.configured)
+      .map(({ id, name }) => ({ value: id, label: name }))
+  ), [domains]);
 
   return (
     <>
@@ -114,6 +140,7 @@ export default function NewLinkModal() {
                     title="URL"
                     placeholder="https://example.com"
                     type={TextField.types.URL}
+                    size={TextField.sizes.MEDIUM}
                     validation={{
                       status: form.formState.errors.url ? 'error' : undefined,
                       text: <InputHint text={form.formState.errors.url?.message} />
@@ -131,6 +158,7 @@ export default function NewLinkModal() {
                     requiredAsterisk
                     title="Short name"
                     placeholder="nice-short-name"
+                    size={TextField.sizes.MEDIUM}
                     validation={{
                       status: form.formState.errors.slug ? 'error' : undefined,
                       text: <InputHint text={slugSuggestion} />
@@ -146,6 +174,7 @@ export default function NewLinkModal() {
                   <TextField
                     title="Password"
                     placeholder="a memorable password"
+                    size={TextField.sizes.MEDIUM}
                     validation={{
                       text: <InputHint text={passwordSuggestion} />
                     }}
@@ -160,11 +189,33 @@ export default function NewLinkModal() {
                   <TextField
                     title="Expires On"
                     type={TextField.types.DATE}
+                    size={TextField.sizes.MEDIUM}
                     validation={{
                       text: <InputHint text={expiresAtSuggestion} />
                     }}
                     {...field}
                   />
+                )}
+              />
+              <Controller
+                name="domain"
+                control={form.control}
+                render={({ field }) => (
+                  <Flex direction={Flex.directions.COLUMN} align={Flex.align.STRETCH} gap={Flex.gaps.XS}>
+                    <Text type={Text.types.TEXT2}>Domain</Text>
+                    <Dropdown
+                      title="Domain"
+                      clearable
+                      searchable={false}
+                      placeholder="Choose from your domains"
+                      size={Dropdown.sizes.MEDIUM}
+                      disabled={isLoading || filteredDomains.length === 0}
+                      options={filteredDomains}
+                      menuPosition={Dropdown.menuPositions.FIXED}
+                      {...field}
+                    />
+                    <InputHint text={!isLoading && filteredDomains.length > 0 ? domainSuggestion : noDomainSuggestion} light />
+                  </Flex>
                 )}
               />
             </div>

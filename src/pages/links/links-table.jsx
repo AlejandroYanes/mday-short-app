@@ -34,7 +34,7 @@ const columns = [
     id: 'slug',
     loadingStateType: 'medium-text',
     title: 'Short name',
-    width: 280,
+    width: 200,
   },
   {
     id: 'password',
@@ -55,6 +55,11 @@ const columns = [
     width: 120,
   },
 ];
+
+const resolveShortLink = (link) => {
+  const { slug, wslug, domain } = link;
+  return domain ? `https://${domain}/${slug}` : `${BASE_URL}/${wslug}/${slug}`;
+};
 
 export default function LinksTable() {
   const { role } = useAuth();
@@ -87,7 +92,7 @@ export default function LinksTable() {
                   </Text>
                 </TableCell>
                 <TableCell>
-                  <Link href={`${BASE_URL}/${link.wslug}/${link.slug}`} text={link.slug} />
+                  <Link href={resolveShortLink(link)} text={link.slug} />
                 </TableCell>
                 <TableCell>{link.password || '-'}</TableCell>
                 <TableCell>{link.expiresAt ? formatDate(link.expiresAt) : '-'}</TableCell>

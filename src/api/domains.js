@@ -58,7 +58,7 @@ export const domainsApi = {
     }
   }),
 
-  remove: (domain) => fetch(`${API_URL}/domains/remove`, {
+  remove: (domain) => fetch(`${API_URL}/domains/delete`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
