@@ -21,7 +21,9 @@ import { domainsApi } from '../../api/domains';
 import { queryClient } from '../../utils/query';
 import { KEBAB_CASE_REGEX } from '../../utils/constants';
 import { monday } from '../../utils/monday';
+import { useAuth } from '../../providers/auth';
 import InputHint from '../../components/input-hint';
+import RenderIf from '../../components/render-if';
 
 const schema = z.object({
   url: z.string()
@@ -48,6 +50,7 @@ const domainSuggestion = 'Select a domain to use for the link. Using a domain wi
 const noDomainSuggestion = 'Add new custom domains to use them here.';
 
 export default function NewLinkModal() {
+  const { isPremium } = useAuth();
   const [showModal, setShowModal] = useState(false);
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const openModalButtonRef = useRef(null);
@@ -202,27 +205,29 @@ export default function NewLinkModal() {
                   />
                 )}
               />
-              <Controller
-                name="domain"
-                control={form.control}
-                render={({ field }) => (
-                  <Flex direction={Flex.directions.COLUMN} align={Flex.align.STRETCH} gap={Flex.gaps.XS}>
-                    <Text type={Text.types.TEXT2}>Domain</Text>
-                    <Dropdown
-                      title="Domain"
-                      clearable
-                      searchable={false}
-                      placeholder="Choose from your domains"
-                      size={Dropdown.sizes.MEDIUM}
-                      disabled={isLoading || filteredDomains.length === 0}
-                      options={filteredDomains}
-                      menuPosition={Dropdown.menuPositions.FIXED}
-                      {...field}
-                    />
-                    <InputHint text={!isLoading && filteredDomains.length > 0 ? domainSuggestion : noDomainSuggestion} light />
-                  </Flex>
-                )}
-              />
+              <RenderIf condition={isPremium}>
+                <Controller
+                  name="domain"
+                  control={form.control}
+                  render={({ field }) => (
+                    <Flex direction={Flex.directions.COLUMN} align={Flex.align.STRETCH} gap={Flex.gaps.XS}>
+                      <Text type={Text.types.TEXT2}>Domain</Text>
+                      <Dropdown
+                        title="Domain"
+                        clearable
+                        searchable={false}
+                        placeholder="Choose from your domains"
+                        size={Dropdown.sizes.MEDIUM}
+                        disabled={isLoading || filteredDomains.length === 0}
+                        options={filteredDomains}
+                        menuPosition={Dropdown.menuPositions.FIXED}
+                        {...field}
+                      />
+                      <InputHint text={!isLoading && filteredDomains.length > 0 ? domainSuggestion : noDomainSuggestion} light />
+                    </Flex>
+                  )}
+                />
+              </RenderIf>
             </div>
           </form>
           {showErrorMessage ? (

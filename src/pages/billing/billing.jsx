@@ -6,12 +6,10 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { formatDate } from '../../utils/dates';
 import { billingAPI } from '../../api/billling';
 import ErrorScreen from '../../components/error-screen';
-import './styles.css';
 import InvoicesTable from './invoices-table';
-import { useAuth } from '../../providers/auth';
+import './styles.css';
 
 export default function BillingPage() {
-  const { isPremium } = useAuth();
 
   const { data: billingInfo, isLoading, isError } = useQuery({
     queryKey: ['billing'],
