@@ -51,6 +51,7 @@ const noDomainSuggestion = 'Add new custom domains to use them here.';
 
 export default function NewLinkModal() {
   const { isPremium } = useAuth();
+
   const [showModal, setShowModal] = useState(false);
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const openModalButtonRef = useRef(null);
@@ -59,6 +60,7 @@ export default function NewLinkModal() {
     queryKey: ['domains'],
     queryFn: domainsApi.list,
     refetchInterval: 60000 * 2, // 2 minutes
+    enabled: isPremium,
   });
 
   const form = useForm({

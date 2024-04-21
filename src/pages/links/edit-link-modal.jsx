@@ -18,11 +18,11 @@ import { useQuery } from '@tanstack/react-query';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { format } from 'date-fns';
 
 import { linksAPI } from '../../api/links';
 import { domainsApi } from '../../api/domains';
 import { queryClient } from '../../utils/query';
-import { stripTimezone } from '../../utils/dates';
 import { KEBAB_CASE_REGEX } from '../../utils/constants';
 import { useAuth } from '../../providers/auth';
 import InputHint from '../../components/input-hint';
@@ -63,6 +63,7 @@ function EditLinkModal(props) {
     queryKey: ['domains'],
     queryFn: domainsApi.list,
     refetchInterval: 60000 * 2, // 2 minutes
+    enabled: isPremium,
   });
 
   const form = useForm({
@@ -70,7 +71,7 @@ function EditLinkModal(props) {
       url: link.url,
       slug: link.slug,
       password: link.password || '',
-      expiresAt: link.expiresAt ? stripTimezone(link.expiresAt) : '',
+      expiresAt: link.expiresAt ? format(new Date(link.expiresAt), 'yyyy-MM-dd') : '',
       domain: null,
     },
     resolver: zodResolver(schema),
