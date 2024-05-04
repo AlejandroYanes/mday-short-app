@@ -76,6 +76,10 @@ code {
   gap: 2rem;
 }
 
+.page--small {
+  width: 900px;
+}
+
 .page--large {
   width: 100%;
 }
@@ -129,6 +133,11 @@ code {
   justify-content: center;
   height: 100%;
   margin: auto;
+}
+
+.message-screen--not-centered {
+  margin-top: 48px;
+  justify-content: flex-start;
 }
 
 .setup-screen {

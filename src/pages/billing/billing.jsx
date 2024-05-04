@@ -6,10 +6,11 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { formatDate } from '../../utils/dates';
 import { billingAPI } from '../../api/billling';
 import ErrorScreen from '../../components/error-screen';
-import './styles.css';
 import InvoicesTable from './invoices-table';
+import './styles.css';
 
 export default function BillingPage() {
+
   const { data: billingInfo, isLoading, isError } = useQuery({
     queryKey: ['billing'],
     queryFn: billingAPI.getDetails,
@@ -87,7 +88,7 @@ export default function BillingPage() {
 
   if (isError || !billingInfo) {
     return (
-      <ErrorScreen title="Oops...">
+      <ErrorScreen title="Oops..." centered={false}>
         <Text type={Text.types.TEXT1} align={Text.align.CENTER}>
           An error occurred while trying to get the billing information.
           <br/>
@@ -121,8 +122,8 @@ export default function BillingPage() {
           <Flex direction={Flex.directions.COLUMN} align={Flex.align.START}>
             <Text type={Text.types.TEXT2}>Current Plan</Text>
             <Flex justify={Flex.justify.START} gap={Flex.gaps.SMALL}>
-              <Text type={Text.types.TEXT1}>Basic Plan</Text>
-              <Text type={Text.types.TEXT1}>${billingInfo.price / 100} /month</Text>
+              <Text type={Text.types.TEXT1}>{billingInfo.plan}</Text>
+              <Text type={Text.types.TEXT1}>${billingInfo.price / 100} /{billingInfo.cycle}</Text>
             </Flex>
           </Flex>
 

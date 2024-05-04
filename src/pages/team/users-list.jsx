@@ -187,10 +187,8 @@ export default function UsersList() {
                     onChange={(option) => handleStatusChange(user.id, option.value)}
                   />
                 </TableCell>
-                <TableCell>
-                  <Flex gap="12">
-                    <DeleteUserModal user={user} disabled={user.email === currentUser}/>
-                  </Flex>
+                <TableCell className="table-cell--center">
+                  <DeleteUserModal user={user} disabled={user.email === currentUser}/>
                 </TableCell>
               </TableRow>
             ))}

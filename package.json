@@ -17,6 +17,7 @@
     "@hookform/resolvers": "3.3.4",
     "@mondaycom/apps-sdk": "3.0.2",
     "@tanstack/react-query": "5.28.4",
+    "date-fns": "3.6.0",
     "monday-sdk-js": "0.5.5",
     "monday-ui-react-core": "2.98.3",
     "react": "18.2.0",

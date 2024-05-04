@@ -21,8 +21,8 @@ export default function InvitationScreen() {
       setLoading(false);
 
       if (response.ok) {
-        const { role, sessionToken } = await response.json();
-        updateStore({ status: APP_STATUS.AUTHENTICATED, role, token: sessionToken });
+        const { role, sessionToken, isPremium } = await response.json();
+        updateStore({ status: APP_STATUS.AUTHENTICATED, role, token: sessionToken, isPremium });
       } else {
         throw new Error('failed to accept invitation');
       }

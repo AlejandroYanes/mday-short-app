@@ -1,26 +1,37 @@
 import { useState } from 'react';
 import { Flex, Link, Tab, TabList } from 'monday-ui-react-core';
 // eslint-disable-next-line import/no-unresolved
-import { Email, Graph, Link as LinkIcon, Team, LearnMore, CreditCard } from 'monday-ui-react-core/icons';
+import { Email, Graph, Link as LinkIcon, Team, LearnMore, CreditCard, Globe } from 'monday-ui-react-core/icons';
 
 import { useAuth } from '../providers/auth';
 import Links from '../pages/links';
 import Users from '../pages/team';
 import BillingPage from '../pages/billing';
+import DomainsPage from '../pages/domains';
 import ComingSoon from './coming-soon';
 
-const renderMap = {
+const Empty = () => null;
+
+const premiumTabs = {
+  0: Links,
+  1: ComingSoon,
+  2: Users,
+  3: DomainsPage,
+  4: BillingPage,
+};
+
+const basicTabs = {
   0: Links,
   1: ComingSoon,
   2: Users,
   3: BillingPage,
-};
-
-const Empty = () => null;
+}
 
 export default function MainView() {
-  const { role } = useAuth();
+  const { role, isPremium } = useAuth();
   const [activeTab, setActiveTab] = useState(0);
+
+  const renderMap = isPremium ? premiumTabs : basicTabs;
 
   const Content = renderMap[activeTab] ?? Empty;
 
@@ -31,6 +42,11 @@ export default function MainView() {
 
   if (role === 'OWNER') {
     tabs.push(<Tab key="team" icon={Team}>Team</Tab>);
+
+    if (isPremium) {
+      tabs.push(<Tab key="domains" icon={Globe}>Domains</Tab>);
+    }
+
     tabs.push(<Tab key="billing" icon={CreditCard}>Billing</Tab>);
   }
 

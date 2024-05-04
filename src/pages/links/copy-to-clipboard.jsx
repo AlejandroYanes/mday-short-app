@@ -10,7 +10,9 @@ export default function CopyToClipboard(props) {
 
   const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(`${BASE_URL}/${link.wslug}/${link.slug}`);
+      const { slug, wslug, domain } = link;
+      const url = domain ? `https://${domain}/${slug}` : `${BASE_URL}/${wslug}/${slug}`;
+      await navigator.clipboard.writeText(url);
       monday.execute('notice', {
         message: 'Short link copied to clipboard',
         type: 'success', // or "error" (red), or "info" (blue)

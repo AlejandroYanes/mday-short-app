@@ -18,10 +18,10 @@ const defaultMessage = (
   </Text>
 );
 
-export default function ErrorScreen({ title, children }) {
+export default function ErrorScreen({ title, children, centered = true }) {
   return (
     <div className="app">
-      <div className="message-screen">
+      <div className={`message-screen ${centered ? '' : 'message-screen--not-centered'}`}>
         <Logo width={120} height={120}/>
         <Heading align={Heading.align.CENTER}>{title ?? 'Oops...'}</Heading>
         {children ?? defaultMessage}
