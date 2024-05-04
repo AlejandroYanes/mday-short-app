@@ -69,8 +69,22 @@ code {
   border: none;
 }
 
+.page {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  gap: 2rem;
+}
+
+.page--small {
+  width: 900px;
+}
+
+.page--large {
+  width: 100%;
+}
+
 .table-container {
-  width: fit-content;
   max-width: 100%
 }
 
@@ -87,6 +101,13 @@ code {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.table-cell--right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
 }
 
 .link-cell__label {
@@ -112,6 +133,11 @@ code {
   justify-content: center;
   height: 100%;
   margin: auto;
+}
+
+.message-screen--not-centered {
+  margin-top: 48px;
+  justify-content: flex-start;
 }
 
 .setup-screen {

@@ -78,7 +78,7 @@ export default function DeleteUserModal(props) {
       >
         <ModalHeader
           title={
-            <Heading type={Heading.types.H3}>
+            <Heading type={Heading.types.H3} element="span">
               Are absolutely you sure?
             </Heading>
           }

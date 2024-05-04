@@ -1,12 +1,12 @@
 /* eslint-disable react/no-children-prop */
-import { useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
-  Button,
+  Button, Dropdown, Flex,
   IconButton,
   Modal,
   ModalContent,
   ModalFooterButtons,
-  ModalHeader,
+  ModalHeader, Text,
   TextField,
   Tooltip,
 } from 'monday-ui-react-core';
@@ -14,63 +14,65 @@ import {
 import { Heading } from 'monday-ui-react-core/next';
 // eslint-disable-next-line import/no-unresolved
 import { Edit } from 'monday-ui-react-core/icons';
+import { useQuery } from '@tanstack/react-query';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { format } from 'date-fns';
 
 import { linksAPI } from '../../api/links';
+import { domainsApi } from '../../api/domains';
 import { queryClient } from '../../utils/query';
-import { stripTimezone } from '../../utils/dates';
 import { KEBAB_CASE_REGEX } from '../../utils/constants';
 import { useAuth } from '../../providers/auth';
+import InputHint from '../../components/input-hint';
+import RenderIf from '../../components/render-if';
 
 const schema = z.object({
-  url: z.string().min(1, { message: 'The url can not be empty' }).url({ message: 'The url is invalid' }),
-  slug: z.string().min(1, { message: 'The short name can not be empty' }).regex(KEBAB_CASE_REGEX, { message: 'The short name is invalid' }),
+  url: z.string()
+    .min(1, { message: 'The url can not be empty' })
+    .url({ message: 'The url is invalid' }),
+  slug: z.string()
+    .min(1, { message: 'The short name can not be empty' })
+    .regex(KEBAB_CASE_REGEX, { message: 'The short name is invalid' }),
   password: z.string().nullish(),
   expiresAt: z.string().nullish(),
+  domain: z.any().nullish(),
 });
 
 const slugSuggestion = (
-  <div style={{ paddingLeft: '14px', marginTop: '4px' }}>
-    <span style={{fontSize: '14px' }}>
-      Use words linked by {`"-"`} and do not use any other <br/>
-      special character (eg: /, %, $, etc). Preferable use 2-5 words.
-    </span>
-  </div>
+  <>
+    Use words linked by {`"-"`} and do not use any other <br/>
+    special character (eg: /, %, $, etc). Preferably use 2-5 words.
+  </>
 );
 
-const passwordSuggestion = (
-  <div style={{paddingLeft: '14px', marginTop: '4px' }}>
-    <span style={{fontSize: '14px' }}>
-      In case you want to restrict who can access the link.
-    </span>
-  </div>
-);
+const passwordSuggestion = 'In case you want to restrict who can access the link.';
+const expiresAtSuggestion = 'Set an expiration date for the link, after this date the link will be disabled.';
+const domainSuggestion = 'Select a domain to use for the link. Using a domain will remove the workspace short name from the link.';
+const noDomainSuggestion = 'Add new custom domains to use them here.';
 
-const expiresAtSuggestion = (
-  <div style={{paddingLeft: '14px', marginTop: '4px' }}>
-    <span style={{fontSize: '14px' }}>
-      Set an expiration date for the link, after this date the link will be disabled.
-    </span>
-  </div>
-);
+function EditLinkModal(props) {
+  const { link, onClose } = props;
 
-export default function EditLinkModal(props) {
-  const { link } = props;
+  const { isPremium } = useAuth();
 
-  const { role } = useAuth();
-
-  const [showModal, setShowModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
-  const openModalButtonRef = useRef(null);
+
+  const { data: domains = [], isLoading } = useQuery({
+    queryKey: ['domains'],
+    queryFn: domainsApi.list,
+    refetchInterval: 60000 * 2, // 2 minutes
+    enabled: isPremium,
+  });
 
   const form = useForm({
     values: {
       url: link.url,
       slug: link.slug,
       password: link.password || '',
-      expiresAt: link.expiresAt ? stripTimezone(link.expiresAt) : '',
+      expiresAt: link.expiresAt ? format(new Date(link.expiresAt), 'yyyy-MM-dd') : '',
+      domain: null,
     },
     resolver: zodResolver(schema),
   });
@@ -80,24 +82,20 @@ export default function EditLinkModal(props) {
     setTimeout(() => setErrorMessage(false), 5000);
   }
 
-  const handleClose = () => {
-    setShowModal(false);
-    form.reset();
-  }
-
   const handleSubmit = async () => {
-    const value = form.getValues();
+    const values = form.getValues();
     try {
       const response = await linksAPI.update({
-        ...value,
-        password: value.password || null,
-        expiresAt: value.expiresAt || null,
+        ...values,
+        password: values.password || null,
+        expiresAt: values.expiresAt || null,
+        domain: values.domain ? values.domain.label : null,
         id: link.id,
       });
 
       if (response.ok) {
         await queryClient.invalidateQueries({ queryKey: ['links'] });
-        setShowModal(false);
+        onClose();
         form.reset();
       } else {
         if (response.field === 'slug') {
@@ -109,10 +107,25 @@ export default function EditLinkModal(props) {
         }
       }
     } catch (error) {
-      console.error(error);
       showError();
     }
   }
+
+  const filteredDomains = useMemo(() => (
+    domains
+      .filter((domain) => domain.verified && domain.configured)
+      .map(({ id, name }) => ({ value: id, label: name }))
+  ), [domains]);
+
+  useEffect(() => {
+    if (filteredDomains.length > 0) {
+      const connectedDomain = filteredDomains.find((domain) => domain.label === link.domain);
+      if (connectedDomain) {
+        form.setValue('domain', connectedDomain);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filteredDomains]);
 
   return (
     <>
@@ -121,21 +134,17 @@ export default function EditLinkModal(props) {
           icon={Edit}
           size={Button.sizes.XS}
           kind={Button.kinds.SECONDARY}
-          ref={openModalButtonRef}
-          disabled={role === 'GUEST'}
-          onClick={() => setShowModal(true)}
         />
       </Tooltip>
       <Modal
-        triggerElement={openModalButtonRef.current}
-        show={showModal}
-        onClose={handleClose}
+        show
+        onClose={onClose}
         closeButtonAriaLabel="close"
       >
         <ModalHeader
           title={
-            <Heading type={Heading.types.H3}>
-            Update Link
+            <Heading type={Heading.types.H3} element="span">
+              Update Link
             </Heading>
           }
         />
@@ -154,7 +163,7 @@ export default function EditLinkModal(props) {
                     type={TextField.types.URL}
                     validation={{
                       status: form.formState.errors.url ? 'error' : undefined,
-                      text: form.formState.errors.url?.message,
+                      text: <InputHint text={form.formState.errors.url?.message} />,
                     }}
                     {...field}
                   />
@@ -171,7 +180,7 @@ export default function EditLinkModal(props) {
                     placeholder="nice-short-name"
                     validation={{
                       status: form.formState.errors.slug ? 'error' : undefined,
-                      text: form.formState.errors.slug?.message ?? slugSuggestion,
+                      text: <InputHint text={slugSuggestion} />,
                     }}
                     {...field}
                   />
@@ -185,7 +194,7 @@ export default function EditLinkModal(props) {
                     title="Password"
                     placeholder="a memorable password"
                     validation={{
-                      text: passwordSuggestion,
+                      text: <InputHint text={passwordSuggestion} />,
                     }}
                     {...field}
                   />
@@ -198,13 +207,37 @@ export default function EditLinkModal(props) {
                   <TextField
                     title="Expires On"
                     type={TextField.types.DATE}
+                    minDate={new Date()}
                     validation={{
-                      text: expiresAtSuggestion,
+                      text: <InputHint text={expiresAtSuggestion} />,
                     }}
                     {...field}
                   />
                 )}
               />
+              <RenderIf condition={isPremium}>
+                <Controller
+                  name="domain"
+                  control={form.control}
+                  render={({ field }) => (
+                    <Flex direction={Flex.directions.COLUMN} align={Flex.align.STRETCH} gap={Flex.gaps.XS}>
+                      <Text type={Text.types.TEXT2}>Domain</Text>
+                      <Dropdown
+                        title="Domain"
+                        clearable
+                        searchable={false}
+                        placeholder="Choose from your domains"
+                        size={Dropdown.sizes.MEDIUM}
+                        disabled={isLoading || filteredDomains.length === 0}
+                        options={filteredDomains}
+                        menuPosition={Dropdown.menuPositions.FIXED}
+                        {...field}
+                      />
+                      <InputHint text={!isLoading && filteredDomains.length > 0 ? domainSuggestion : noDomainSuggestion} light />
+                    </Flex>
+                  )}
+                />
+              </RenderIf>
             </div>
           </form>
           {errorMessage ? (
@@ -217,9 +250,29 @@ export default function EditLinkModal(props) {
           primaryButtonText="Confirm"
           secondaryButtonText="Cancel"
           onPrimaryButtonClick={form.handleSubmit(handleSubmit)}
-          onSecondaryButtonClick={handleClose}
+          onSecondaryButtonClick={onClose}
         />
       </Modal>
     </>
+  );
+}
+
+export default function EditLinkModalWrapper(props) {
+  const [showModal, setShowModal] = useState(false);
+
+  const { role } = useAuth();
+
+  if (showModal) {
+    return <EditLinkModal {...props} onClose={() => setShowModal(false)} />;
+  }
+
+  return (
+    <IconButton
+      icon={Edit}
+      size={Button.sizes.XS}
+      kind={Button.kinds.SECONDARY}
+      disabled={role === 'GUEST'}
+      onClick={() => setShowModal(true)}
+    />
   );
 }

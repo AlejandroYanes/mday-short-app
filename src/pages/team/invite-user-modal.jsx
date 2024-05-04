@@ -95,7 +95,7 @@ export default function InviteUserModal() {
       >
         <ModalHeader
           title={
-            <Heading type={Heading.types.H3}>
+            <Heading type={Heading.types.H3} element="span">
               Invite a new user
             </Heading>
           }

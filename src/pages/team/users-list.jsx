@@ -43,7 +43,7 @@ const columns = [
     id: 'actions',
     loadingStateType: 'medium-text',
     title: '',
-    width: 120,
+    // width: 120,
   },
 ];
 
@@ -142,17 +142,17 @@ export default function UsersList() {
   }
 
   return (
-    <>
+    <div className="page">
       <div>
         <InviteUserModal />
       </div>
-      <div className="table-container">
+      <div className="table-container table-container--centered">
         <Table columns={columns} emptyState={<TableEmptyState/>} errorState={<TableErrorState/>}>
           <TableHeader>
             <TableHeaderCell title="Name"/>
             <TableHeaderCell title="Role" className="table-cell--center"/>
             <TableHeaderCell title="Status" className="table-cell--center"/>
-            <TableHeaderCell title="" className="table-cell--center"/>
+            <TableHeaderCell title=""/>
           </TableHeader>
           <TableBody>
             {results.map((user) => (
@@ -188,15 +188,13 @@ export default function UsersList() {
                   />
                 </TableCell>
                 <TableCell className="table-cell--center">
-                  <Flex gap="12">
-                    <DeleteUserModal user={user} disabled={user.email === currentUser}/>
-                  </Flex>
+                  <DeleteUserModal user={user} disabled={user.email === currentUser}/>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </div>
-    </>
+    </div>
   );
 }

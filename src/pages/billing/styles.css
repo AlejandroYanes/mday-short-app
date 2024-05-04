@@ -1,0 +1,28 @@
+.billing__page {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  width: 900px;
+  gap: 2rem;
+}
+
+.billing__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.billing__card {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 16px;
+  border-radius: var(--border-radius-medium);
+  border: 1px solid var(--ui-border-color);
+}
+
+.billing__card__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}

@@ -28,13 +28,13 @@ const columns = [
     id: 'baseLink',
     loadingStateType: 'medium-text',
     title: 'Link',
-    width: 440,
+    // width: 440,
   },
   {
     id: 'slug',
     loadingStateType: 'medium-text',
     title: 'Short name',
-    width: 280,
+    width: 200,
   },
   {
     id: 'password',
@@ -56,14 +56,19 @@ const columns = [
   },
 ];
 
-export default function LinksList() {
+const resolveShortLink = (link) => {
+  const { slug, wslug, domain } = link;
+  return domain ? `https://${domain}/${slug}` : `${BASE_URL}/${wslug}/${slug}`;
+};
+
+export default function LinksTable() {
   const { role } = useAuth();
 
   const { data } = useQuery({ queryKey: ['links'], queryFn: linksAPI.list });
   const results = data?.results || [];
 
   return (
-    <>
+    <div className="page page--large">
       <div style={{ height: 40 }}>
         <RenderIf condition={role !== 'GUEST'}>
           <NewLinkModal />
@@ -87,7 +92,7 @@ export default function LinksList() {
                   </Text>
                 </TableCell>
                 <TableCell>
-                  <Link href={`${BASE_URL}/${link.wslug}/${link.slug}`} text={link.slug} />
+                  <Link href={resolveShortLink(link)} text={link.slug} />
                 </TableCell>
                 <TableCell>{link.password || '-'}</TableCell>
                 <TableCell>{link.expiresAt ? formatDate(link.expiresAt) : '-'}</TableCell>
@@ -105,6 +110,6 @@ export default function LinksList() {
           </TableBody>
         </Table>
       </div>
-    </>
+    </div>
   );
 }
