@@ -29,6 +29,7 @@ const useAuthStore = create((set) => ({
   workspace: null,
   token: null,
   isPremium: false,
+  isFreeTrial: false,
   updateStore: (state) => set((prev) => ({ ...prev, ...state })),
 }));
 
@@ -79,7 +80,7 @@ export const handleInitialisation = async () => {
     const response = await authAPI.check({ workspace, name, email, token });
 
     if (response.ok) {
-      const { status, token: sessionToken, role, isPremium } = await response.json();
+      const { status, token: sessionToken, role, isPremium, isFreeTrial } = await response.json();
 
       switch (status) {
         case 'found':
@@ -91,6 +92,7 @@ export const handleInitialisation = async () => {
             workspace,
             token: sessionToken,
             isPremium,
+            isFreeTrial,
           });
           break;
         case 'needs-billing':

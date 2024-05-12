@@ -47,8 +47,7 @@ export default function MainView() {
       tabs.push(<Tab key="domains" icon={Globe}>Domains</Tab>);
     }
 
-    // TODO: uncomment when billing is ready
-    // tabs.push(<Tab key="billing" icon={CreditCard}>Billing</Tab>);
+    tabs.push(<Tab key="billing" icon={CreditCard}>Billing</Tab>);
   }
 
   return (

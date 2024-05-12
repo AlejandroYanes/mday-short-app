@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Button, Text, Toggle } from 'monday-ui-react-core';
+import { Button, Flex, Text, Toggle } from 'monday-ui-react-core';
 // eslint-disable-next-line import/no-unresolved
 import { Heading } from 'monday-ui-react-core/next';
 
 import { BILLING_CYCLE, PLANS } from '../../utils/constants';
+import { monday } from '../../utils/monday';
 import { billingAPI } from '../../api/billling';
 import { handleInitialisation, useAuth } from '../../providers/auth';
 import { Logo } from '../../components/logo';
@@ -39,7 +40,7 @@ export default function NeedsBillingScreen() {
   const [error, setError] = useState(false);
 
   // TODO: should add error handling at some point
-  const { data } = useQuery({
+  const { data, error: fetchError } = useQuery({
     queryKey: ['billing', { workspace, token }],
     queryFn: () => billingAPI.check({ workspace, token }),
   });
@@ -49,6 +50,16 @@ export default function NeedsBillingScreen() {
       handleInitialisation();
     }
   }, [data]);
+
+  useEffect(() => {
+    if (fetchError) {
+      monday.execute('notice', {
+        type: 'error',
+        timeout: 2500,
+        message: 'An error occurred while checking the billing status. Please try again later or contact support.',
+      });
+    }
+  }, [fetchError]);
 
   const handleBillingCycleChange = (selected) => {
     setBillingCycle(selected ? BILLING_CYCLE.YEAR : BILLING_CYCLE.MONTH);
@@ -99,14 +110,19 @@ export default function NeedsBillingScreen() {
                   <li>Access to Analytics (coming soon)</li>
                 </ul>
               </Text>
-              <Button
-                kind={Button.kinds.SECONDARY}
-                disabled={!!processingPlan && processingPlan !== PLANS.BASIC}
-                loading={processingPlan === PLANS.BASIC}
-                onClick={() => getCheckoutURL(PLANS.BASIC)}
-              >
-                Buy Plan
-              </Button>
+              <Flex direction={Flex.directions.COLUMN} align={Flex.align.STRETCH} gap={Flex.gaps.MEDIUM}>
+                <Button
+                  kind={Button.kinds.SECONDARY}
+                  disabled={!!processingPlan && processingPlan !== PLANS.BASIC}
+                  loading={processingPlan === PLANS.BASIC}
+                  onClick={() => getCheckoutURL(PLANS.BASIC)}
+                >
+                Get Started
+                </Button>
+                <Text type={Text.types.TEXT2} align={Text.align.CENTER} element="p">
+                With a 14 days free trial.
+                </Text>
+              </Flex>
             </Container>
 
             <div className="billing_cards__divider"/>
@@ -117,30 +133,32 @@ export default function NeedsBillingScreen() {
               <Text type={Text.types.TEXT1} className="billing_cards__features__container">
                 <ul className="billing_cards__features">
                   <li>Sames as the Base Plan</li>
-                  <li>Use custom domains (coming soon)</li>
+                  <li>Use custom domains</li>
                   <li>Generate QR codes to share (coming soon)</li>
                 </ul>
               </Text>
               <Text type={Text.types.TEXT1} element="p">
                 We are offering discounts for the first 100 users.
               </Text>
-              <Button
-                kind={Button.kinds.PRIMARY}
-                disabled={!!processingPlan && processingPlan !== PLANS.PREMIUM}
-                loading={processingPlan === PLANS.PREMIUM}
-                onClick={() => getCheckoutURL(PLANS.PREMIUM)}
-              >
-                Buy Plan
-              </Button>
+              <Flex direction={Flex.directions.COLUMN} align={Flex.align.STRETCH} gap={Flex.gaps.MEDIUM}>
+                <Button
+                  kind={Button.kinds.PRIMARY}
+                  disabled={!!processingPlan && processingPlan !== PLANS.PREMIUM}
+                  loading={processingPlan === PLANS.PREMIUM}
+                  onClick={() => getCheckoutURL(PLANS.PREMIUM)}
+                >
+                  Get Started
+                </Button>
+                <Text type={Text.types.TEXT2} align={Text.align.CENTER} element="p">
+                  With a 14 days free trial.
+                </Text>
+              </Flex>
             </Container>
           </div>
         </div>
 
         <Text element="p" type={Text.types.TEXT1} align={Text.align.CENTER} style={{ marginBottom: '16px' }}>
-          We advice for the billing to be set up by a workspace owner.
-          <br/>
-          Not doing so will not affect the {`app's`} functionality {' '}
-          but only owners will have access to the billing settings.
+          If the user setting up the billing is not an owner, one will be picked from the workspace.
         </Text>
 
         {error ? (

@@ -20,6 +20,7 @@ import { formatDate } from '../../utils/dates';
 import { billingAPI } from '../../api/billling';
 import TableEmptyState from '../../components/empty-state';
 import TableErrorState from '../../components/error-state';
+import RenderIf from '../../components/render-if';
 
 const columns = [
   {
@@ -92,17 +93,23 @@ export default function InvoicesTable() {
                 </Text>
               </TableCell>
               <TableCell className="capitalize table-cell--center">
-                <Label text={invoice.status} kind={Label.kinds.LINE} color={resolveColor(invoice.status)} />
+                <Label
+                  text={invoice.cardBrand === '----' ? 'Trial' : invoice.status}
+                  kind={Label.kinds.LINE}
+                  color={resolveColor(invoice.status)}
+                />
               </TableCell>
               <TableCell className="table-cell--right">
                 <Text type={Text.types.TEXT1} element="p">
-                  ${invoice.total/100}
+                  {invoice.cardBrand === '----' ? '----' : `$${invoice.total/100}`}
                 </Text>
               </TableCell>
               <TableCell>
                 <Text type={Text.types.TEXT1} element="p">
-                  <span className="capitalize" style={{marginRight: '4px'}}>{invoice.cardBrand}</span>
-                  <span>{`ending in ${invoice.cardDigits}`}</span>
+                  <RenderIf condition={invoice.cardBrand !== '----'} fallback="----">
+                    <span className="capitalize" style={{marginRight: '4px'}}>{invoice.cardBrand}</span>
+                    <span>{`ending in ${invoice.cardDigits}`}</span>
+                  </RenderIf>
                 </Text>
               </TableCell>
               <TableCell className="table-cell--center">

@@ -113,7 +113,7 @@ export default function BillingPage() {
             <Button
               kind={Button.kinds.SECONDARY}
               loading={isFetchingSubsLink}
-              onClick={() => updateSubscription()}
+              onClick={updateSubscription}
             >
               Update
             </Button>
@@ -123,7 +123,9 @@ export default function BillingPage() {
             <Text type={Text.types.TEXT2}>Current Plan</Text>
             <Flex justify={Flex.justify.START} gap={Flex.gaps.SMALL}>
               <Text type={Text.types.TEXT1}>{billingInfo.plan}</Text>
-              <Text type={Text.types.TEXT1}>${billingInfo.price / 100} /{billingInfo.cycle}</Text>
+              <Text type={Text.types.TEXT1}>
+                ${billingInfo.price / 100} /{billingInfo.cycle}{billingInfo.status === 'on_trial' ? ' (On Trial)' : ''}
+              </Text>
             </Flex>
           </Flex>
 
@@ -156,7 +158,7 @@ export default function BillingPage() {
             <Button
               kind={Button.kinds.SECONDARY}
               loading={isFetchingPaymentLink}
-              onClick={() => updatePaymentMethod()}
+              onClick={updatePaymentMethod}
             >
               Update
             </Button>
