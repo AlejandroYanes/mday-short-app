@@ -25,8 +25,32 @@ export const billingAPI = {
     body: JSON.stringify({ workspace, email, plan, cycle, token }),
   }),
 
-  getLinkToUpdateSubscription: () => fetch(`${API_URL}/billing/update/subscription`, {
-    method: 'GET',
+  pauseSubscription: () => fetch(`${API_URL}/billing/subscription/pause`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${resolveSessionToken()}`,
+    },
+  }).then(handle401),
+
+  unpauseSubscription: () => fetch(`${API_URL}/billing/subscription/unpause`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${resolveSessionToken()}`,
+    },
+  }).then(handle401),
+
+  cancelSubscription: () => fetch(`${API_URL}/billing/subscription/cancel`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${resolveSessionToken()}`,
+    },
+  }).then(handle401),
+
+  resumeSubscription: () => fetch(`${API_URL}/billing/subscription/resume`, {
+    method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${resolveSessionToken()}`,

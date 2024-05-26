@@ -21,50 +21,8 @@ import { billingAPI } from '../../api/billling';
 import TableEmptyState from '../../components/empty-state';
 import TableErrorState from '../../components/error-state';
 import RenderIf from '../../components/render-if';
-
-const columns = [
-  {
-    id: 'invoice-date',
-    loadingStateType: 'medium-text',
-    title: 'Invoice Date',
-    width: 220,
-  },
-  {
-    id: 'status',
-    loadingStateType: 'medium-text',
-    title: 'Status',
-    width: 100,
-  },
-  {
-    id: 'amount',
-    loadingStateType: 'medium-text',
-    title: 'Amount',
-    width: 100,
-  },
-  {
-    id: 'card-details',
-    loadingStateType: 'medium-text',
-    title: 'Card used',
-    // width: 200,
-  },
-  {
-    id: 'actions',
-    loadingStateType: 'medium-text',
-    title: '',
-    width: 80,
-  },
-];
-
-const resolveColor = (status) => {
-  switch (status) {
-    case 'paid':
-      return Label.colors.POSITIVE;
-    case 'failed':
-      return Label.colors.NEGATIVE;
-    default:
-      return Label.colors.DARK;
-  }
-}
+import { columns } from './constants';
+import { resolveStatusColor } from './helpers';
 
 export default function InvoicesTable() {
   const { data: results = [] } = useQuery({
@@ -96,7 +54,7 @@ export default function InvoicesTable() {
                 <Label
                   text={invoice.cardBrand === '----' ? 'Trial' : invoice.status}
                   kind={Label.kinds.LINE}
-                  color={resolveColor(invoice.status)}
+                  color={resolveStatusColor(invoice.status)}
                 />
               </TableCell>
               <TableCell className="table-cell--right">
