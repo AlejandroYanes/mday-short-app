@@ -107,7 +107,7 @@ export default function NeedsBillingScreen() {
               <Text type={Text.types.TEXT1} className="billing_cards__features__container">
                 <ul className="billing_cards__features">
                   <li>Create as many links as you want to</li>
-                  <li>Access to Analytics (coming soon)</li>
+                  <li>90 days of analytics (coming soon)</li>
                 </ul>
               </Text>
               <Flex direction={Flex.directions.COLUMN} align={Flex.align.STRETCH} gap={Flex.gaps.MEDIUM}>
@@ -132,7 +132,8 @@ export default function NeedsBillingScreen() {
               <Price value={billingCycle === 'month' ? 12 : 120} cycle={billingCycle} highlight/>
               <Text type={Text.types.TEXT1} className="billing_cards__features__container">
                 <ul className="billing_cards__features">
-                  <li>Sames as the Base Plan</li>
+                  <li>Create as many links as you want to</li>
+                  <li>365 days of analytics (coming soon)</li>
                   <li>Use custom domains</li>
                   <li>Generate QR codes to share (coming soon)</li>
                 </ul>
